@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amenires World Bank - Introduction Video</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', 'Arial', sans-serif;
+      background: #000;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    /* Video Container */
+    .video-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      overflow: hidden;
+    }
+
+    /* Particle Background */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 215, 0, 0.6);
+      border-radius: 50%;
+      animation: float 8s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+    }
+
+    /* Logo Animation */
+    .logo-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 1.5s ease-out 0.5s forwards;
+    }
+
+    .logo-shield {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 30px;
+      animation: shieldPulse 3s ease-in-out 2s infinite;
+    }
+
+    .logo-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 10px 30px rgba(102, 126, 234, 0.5));
+    }
+
+    @keyframes shieldPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    /* Text Animations */
+    .brand-name {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: slideIn 1s ease-out 1s forwards;
+      text-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+    }
+
+    .brand-subtitle {
+      font-size: 24px;
+      font-weight: 600;
+      color: #ffd700;
+      letter-spacing: 12px;
+      opacity: 0;
+      animation: slideIn 1s ease-out 1.5s forwards;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Feature Cards */
+    .features {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 30px;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 3s forwards;
+    }
+
+    .feature {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .feature-text {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* Globe Animation */
+    .globe {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotate 20s linear infinite;
+    }
+
+    .globe::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .globe-line {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      animation: rotate 30s linear infinite reverse;
+    }
+
+    @keyframes rotate {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out 4s forwards;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2, #ffd700);
+      width: 0%;
+      animation: progress 6s linear forwards;
+    }
+
+    @keyframes progress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    .skip-button {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out 5s forwards;
+    }
+
+    .skip-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ffd700;
+      transform: scale(1.05);
+    }
+
+    /* Scene 2 - Welcome */
+    .scene-2 {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .scene-2.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .welcome-text {
+      font-size: 60px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: welcomePulse 2s ease-in-out infinite;
+    }
+
+    .welcome-sub {
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .cta-button {
+      background: #ffd700;
+      color: #1a1a2e;
+      padding: 20px 50px;
+      border: none;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s;
+      animation: ctaPulse 1.5s ease-in-out infinite;
+    }
+
+    .cta-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+    }
+
+    @keyframes welcomePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    @keyframes ctaPulse {
+      0%, 100% { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+      50% { box-shadow: 0 10px 25px rgba(255, 215, 0, 0.6); }
+    }
+
+    /* Sound Wave Visualizer */
+    .sound-wave {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 3px;
+      opacity: 0.5;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background: rgba(255, 215, 0, 0.8);
+      border-radius: 3px;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { height: 10px; }
+      50% { height: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container" id="videoContainer">
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Globe Background -->
+    <div class="globe">
+      <div class="globe-line"></div>
+    </div>
+
+    <!-- Scene 1: Logo Introduction -->
+    <div class="scene-1" id="scene1">
+      <div class="logo-container">
+        <div class="logo-shield">
+          <svg class="logo-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <!-- Shield Base -->
+            <defs>
+              <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ffb700;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+
+            <!-- Main Shield -->
+            <path d="M256,20 L450,100 L450,256 C450,380 350,460 256,492 C162,460 62,380 62,256 L62,100 L256,20 Z"
+                  fill="url(#shieldGrad)"
+                  stroke="#5a67d8"
+                  stroke-width="3"/>
+
+            <!-- Inner Circle -->
+            <circle cx="256" cy="230" r="120"
+                    fill="rgba(255,255,255,0.15)"
+                    stroke="#ffd700"
+                    stroke-width="2"/>
+
+            <!-- Globe Grid -->
+            <g stroke="#ffd700" stroke-width="1.5" opacity="0.8">
+              <line x1="256" y1="110" x2="256" y2="350"/>
+              <line x1="136" y1="230" x2="376" y2="230"/>
+              <line x1="176" y1="150" x2="336" y2="310"/>
+              <line x1="336" y1="150" x2="176" y2="310"/>
+              <path d="M196,150 Q256,130 316,150" fill="none"/>
+            </g>
+
+            <!-- Letter A -->
+            <text x="256" y="260"
+                  text-anchor="middle"
+                  font-family="Arial Black, sans-serif"
+                  font-size="72"
+                  font-weight="900"
+                  fill="url(#goldGrad)"
+                  filter="drop-shadow(2px 2px 4px rgba(0,0,0,0.3))">A</text>
+
+            <!-- Golden Accent -->
+            <path d="M256,30 L400,95 L256,80 L112,95 Z"
+                  fill="#ffd700"
+                  opacity="0.9"/>
+          </svg>
+        </div>
+
+        <div class="brand-name">AMENIRES</div>
+        <div class="brand-subtitle">WORLD BANK</div>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">🌍</div>
+          <div class="feature-text">200+ Countries</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💰</div>
+          <div class="feature-text">50+ Currencies</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔐</div>
+          <div class="feature-text">Bank-Grade Security</div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 2: Welcome -->
+    <div class="scene-2" id="scene2">
+      <div class="welcome-text">
+        Welcome to<br>
+        <span style="color: #ffd700;">Amenires World Bank</span>
+      </div>
+      <div class="welcome-sub">
+        Your Trusted Global Financial Partner<br>
+        Secure, Fast, and Accessible
+      </div>
+      <button class="cta-button" onclick="navigateToSignup()">
+        Get Started Now →
+      </button>
+    </div>
+
+    <!-- Sound Wave -->
+    <div class="sound-wave">
+      <div class="wave-bar" style="animation-delay: 0s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.1s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.2s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.3s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.4s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.3s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.2s;"></div>
+      <div class="wave-bar" style="animation-delay: 0.1s;"></div>
+    </div>
+
+    <!-- Skip Button -->
+    <button class="skip-button" onclick="skipToWelcome()">Skip Intro</button>
+  </div>
+
+  <script>
+    // Create particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    // Scene transitions
+    let currentScene = 1;
+
+    function skipToWelcome() {
+      showScene2();
+    }
+
+    function showScene2() {
+      document.getElementById('scene1').style.display = 'none';
+      document.getElementById('scene2').classList.add('active');
+      currentScene = 2;
+    }
+
+    // Auto transition after 6 seconds
+    setTimeout(() => {
+      if (currentScene === 1) {
+        showScene2();
+      }
+    }, 6000);
+
+    function navigateToSignup() {
+      window.location.href = '/signup-final.html';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+    });
+  </script>
+</body>
+</html>

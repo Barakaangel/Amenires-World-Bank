@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Amenires World Bank - Global Banking Solutions for Everyone">
+  <meta name="keywords" content="banking, finance, global banking, international bank, currency exchange">
+  <title>Amenires World Bank | Global Banking Solutions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: white;
+    }
+
+    /* Navigation */
+    nav {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .logo i {
+      font-size: 32px;
+      color: #ffd700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #ffd700;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn-nav {
+      padding: 10px 25px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-login {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .btn-login:hover {
+      background: white;
+      color: #667eea;
+    }
+
+    .btn-signup {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 100px 5%;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin: 60px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 48px;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    /* Currencies Section */
+    .currencies-section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 80px 5%;
+      backdrop-filter: blur(10px);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 60px;
+      color: white;
+    }
+
+    .currencies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .currency-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px 15px;
+      border-radius: 15px;
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .currency-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #ffd700;
+    }
+
+    .currency-symbol {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .currency-code {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .currency-name {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    /* Countries Section */
+    .countries-section {
+      padding: 80px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .country-search {
+      margin-bottom: 40px;
+    }
+
+    .country-search input {
+      width: 100%;
+      max-width: 600px;
+      padding: 15px 25px;
+      border-radius: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+    }
+
+    .country-search input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .countries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .country-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      transition: all 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+    }
+
+    .country-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #ffd700;
+    }
+
+    .country-flag {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .country-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .country-currency {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 80px 5%;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #ffd700;
+    }
+
+    .feature-title {
+      font-size: 22px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .feature-description {
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 5%;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-size: 42px;
+      margin-bottom: 20px;
+      color: #ffd700;
+    }
+
+    .cta-description {
+      font-size: 18px;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+
+    .btn-cta {
+      padding: 18px 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 60px 5%;
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+    }
+
+    .footer-section h3 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #ffd700;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-section ul li a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .footer-section ul li a:hover {
+      color: #ffd700;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 40px;
+      margin-top: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero-stats {
+        gap: 30px;
+      }
+
+      .stat-number {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">
+      <i class="fas fa-university"></i>
+      Amenires World Bank
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#currencies">Currencies</a></li>
+      <li><a href="#countries">Countries</a></li>
+      <li><a href="#support">Support</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <a href="login-enhanced.html" class="btn-nav btn-login">Login</a>
+      <a href="signup-final.html" class="btn-nav btn-signup">Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Global Banking Solutions for Everyone</h1>
+    <p>Experience secure, fast, and convenient banking across 200+ countries and 50+ currencies. Your money, your way, everywhere.</p>
+    
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number">200+</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Currencies</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Support</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">$0</div>
+        <div class="stat-label">Monthly Fees</div>
+      </div>
+    </div>
+
+    <a href="signup-final.html" class="btn-cta">Open Free Account</a>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <h2 class="section-title">Why Choose Us</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fas fa-globe feature-icon"></i>
+        <h3 class="feature-title">Global Access</h3>
+        <p class="feature-description">Bank from anywhere in the world with our multilingual platform and multi-currency accounts.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-shield-alt feature-icon"></i>
+        <h3 class="feature-title">Bank-Grade Security</h3>
+        <p class="feature-description">256-bit SSL encryption, 2FA, and real-time fraud detection keep your money safe.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-bolt feature-icon"></i>
+        <h3 class="feature-title">Instant Transfers</h3>
+        <p class="feature-description">Send and receive money instantly across the globe with competitive exchange rates.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-mobile-alt feature-icon"></i>
+        <h3 class="feature-title">Mobile Banking</h3>
+        <p class="feature-description">Manage your finances on-the-go with our intuitive mobile app and web platform.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-percentage feature-icon"></i>
+        <h3 class="feature-title">Competitive Rates</h3>
+        <p class="feature-description">Earn competitive interest on savings and get low rates on loans and transfers.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-headset feature-icon"></i>
+        <h3 class="feature-title">24/7 Support</h3>
+        <p class="feature-description">Our dedicated support team is available round the clock to assist you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Currencies Section -->
+  <section class="currencies-section" id="currencies">
+    <h2 class="section-title">Supported Currencies</h2>
+    <div class="currencies-grid" id="currenciesGrid">
+      <!-- Currencies will be loaded dynamically -->
+    </div>
+  </section>
+
+  <!-- Countries Section -->
+  <section class="countries-section" id="countries">
+    <h2 class="section-title">Available Countries</h2>
+    <div class="country-search">
+      <input type="text" id="countrySearch" placeholder="Search countries..." onkeyup="filterCountries()">
+    </div>
+    <div class="countries-grid" id="countriesGrid">
+      <!-- Countries will be loaded dynamically -->
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2 class="cta-title">Ready to Start Banking Globally?</h2>
+    <p class="cta-description">Open your free account today and experience the future of banking.</p>
+    <a href="signup-final.html" class="btn-cta">Get Started Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer id="support">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Amenires World Bank</h3>
+        <p style="opacity: 0.7;">Your trusted global banking partner since 2024. Secure, reliable, and always available.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Products</h3>
+        <ul>
+          <li><a href="#">Personal Banking</a></li>
+          <li><a href="#">Business Banking</a></li>
+          <li><a href="#">Multi-Currency Accounts</a></li>
+          <li><a href="#">Investment Services</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Regulatory Information</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Amenires World Bank. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css"></script>
+  <script>
+    // Load countries data
+    let allCountries = [];
+
+    // Fetch countries
+    async function loadCountries() {
+      try {
+        const response = await fetch('/data/countries.js');
+        const text = await response.text();
+        
+        // Execute the script to get countries data
+        const script = document.createElement('script');
+        script.textContent = text;
+        document.head.appendChild(script);
+        
+        // Wait for data to be available
+        setTimeout(() => {
+          if (typeof window.countries !== 'undefined') {
+            allCountries = window.countries;
+            displayCountries(allCountries);
+            displayCurrencies(allCountries);
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Error loading countries:', error);
+      }
+    }
+
+    // Display countries
+    function displayCountries(countries) {
+      const grid = document.getElementById('countriesGrid');
+      grid.innerHTML = '';
+      
+      countries.forEach(country => {
+        const card = document.createElement('div');
+        card.className = 'country-card';
+        card.innerHTML = `
+          <div class="country-flag">🏳️</div>
+          <div class="country-name">${country.name}</div>
+          <div class="country-currency">${country.currency}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Display currencies
+    function displayCurrencies(countries) {
+      const grid = document.getElementById('currenciesGrid');
+      grid.innerHTML = '';
+      
+      // Get unique currencies
+      const uniqueCurrencies = [...new Set(countries.map(c => c.currency))].sort();
+      
+      const currencySymbols = {
+        'USD': '$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 'CNY': '¥',
+        'KRW': '₩', 'INR': '₹', 'AUD': 'A$', 'CAD': 'C$', 'CHF': 'Fr'
+      };
+      
+      uniqueCurrencies.forEach(currency => {
+        const card = document.createElement('div');
+        card.className = 'currency-card';
+        const symbol = currencySymbols[currency] || currency.charAt(0);
+        card.innerHTML = `
+          <div class="currency-symbol">${symbol}</div>
+          <div class="currency-code">${currency}</div>
+          <div class="currency-name">Currency</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Filter countries
+    function filterCountries() {
+      const search = document.getElementById('countrySearch').value.toLowerCase();
+      const filtered = allCountries.filter(country => 
+        country.name.toLowerCase().includes(search) ||
+        country.code.toLowerCase().includes(search) ||
+        country.currency.toLowerCase().includes(search)
+      );
+      displayCountries(filtered);
+    }
+
+    // Load on page load
+    window.addEventListener('load', loadCountries);
+  </script>
+</body>
+</html>

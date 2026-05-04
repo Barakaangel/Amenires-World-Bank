@@ -1,0 +1,276 @@
+{
+  "brand": {
+    "name": "Amenires World Bank",
+    "tagline": "Your Global Financial Partner",
+    "type": "Professional Banking Institution",
+    "established": "2024"
+  },
+  "logo": {
+    "version": "2.0",
+    "type": "vector-based",
+    "description": "Modern, elegant, and trustworthy banking logo with golden accents and gradient colors",
+    "primary": {
+      "type": "emblem",
+      "style": "shield-globe",
+      "dimensions": {
+        "width": "512",
+        "height": "512",
+        "ratio": "1:1"
+      },
+      "elements": [
+        {
+          "name": "Shield Base",
+          "type": "path",
+          "color": {
+            "primary": "#667eea",
+            "gradient": {
+              "start": "#667eea",
+              "end": "#764ba2",
+              "angle": 135
+            }
+          },
+          "path": "M256,20 L450,100 L450,256 C450,380 350,460 256,492 C162,460 62,380 62,256 L62,100 L256,20 Z",
+          "fill": true,
+          "stroke": "#5a67d8",
+          "strokeWidth": 3
+        },
+        {
+          "name": "Inner Circle",
+          "type": "circle",
+          "cx": 256,
+          "cy": 230,
+          "r": 120,
+          "color": {
+            "primary": "#ffffff",
+            "opacity": 0.15
+          },
+          "fill": true,
+          "stroke": "#ffd700",
+          "strokeWidth": 2
+        },
+        {
+          "name": "Globe Grid",
+          "type": "path",
+          "color": "#ffd700",
+          "opacity": 0.8,
+          "strokeWidth": 1.5,
+          "elements": [
+            "M256,110 L256,350",
+            "M136,230 L376,230",
+            "M176,150 L336,310",
+            "M336,150 L176,310",
+            "M196,150 L256,110 L316,150",
+            "M136,230 L116,200 L136,260",
+            "M376,230 L396,200 L396,260"
+          ]
+        },
+        {
+          "name": "Letter A",
+          "type": "text",
+          "text": "A",
+          "font": {
+            "family": "Arial Black, sans-serif",
+            "size": 72,
+            "weight": "900"
+          },
+          "position": {
+            "x": 256,
+            "y": 250
+          },
+          "color": "#ffd700",
+          "shadow": {
+            "blur": 4,
+            "color": "rgba(0,0,0,0.3)",
+            "offset": {
+              "x": 2,
+              "y": 2
+            }
+          },
+          "textAlign": "center"
+        },
+        {
+          "name": "Golden Accent Top",
+          "type": "path",
+          "color": "#ffd700",
+          "path": "M256,30 L400,95 L256,80 L112,95 Z",
+          "fill": true,
+          "opacity": 0.9
+        }
+      ]
+    },
+    "secondary": {
+      "type": "text-based",
+      "elements": [
+        {
+          "name": "Brand Name",
+          "text": "AMENIRES",
+          "font": {
+            "family": "Montserrat, Arial, sans-serif",
+            "size": 48,
+            "weight": "800",
+            "letterSpacing": 4
+          },
+          "color": "#ffffff",
+          "shadow": {
+            "blur": 8,
+            "color": "rgba(0,0,0,0.4)"
+          }
+        },
+        {
+          "name": "Subtitle",
+          "text": "WORLD BANK",
+          "font": {
+            "family": "Montserrat, Arial, sans-serif",
+            "size": 20,
+            "weight": "600",
+            "letterSpacing": 8
+          },
+          "color": "#ffd700",
+          "marginTop": 5
+        },
+        {
+          "name": "Tagline",
+          "text": "Your Global Financial Partner",
+          "font": {
+            "family": "Open Sans, Arial, sans-serif",
+            "size": 14,
+            "weight": "400",
+            "letterSpacing": 2
+          },
+          "color": "#a0aec0",
+          "marginTop": 10
+        }
+      ]
+    },
+    "icon": {
+      "type": "compact",
+      "size": 64,
+      "elements": [
+        {
+          "name": "Mini Shield",
+          "path": "M32,4 L56,12 L56,32 C56,48 44,58 32,62 C20,58 8,48 8,32 L8,12 L32,4 Z",
+          "color": "#667eea",
+          "fill": true
+        },
+        {
+          "name": "Mini Globe",
+          "circle": {
+            "cx": 32,
+            "cy": 28,
+            "r": 16
+          },
+          "color": "#ffd700",
+          "fill": false,
+          "strokeWidth": 2
+        },
+        {
+          "name": "Mini A",
+          "text": "A",
+          "color": "#ffd700",
+          "font": {
+            "size": 16,
+            "weight": "900"
+          },
+          "position": {
+            "x": 32,
+            "y": 32
+          },
+          "textAlign": "center"
+        }
+      ]
+    }
+  },
+  "colors": {
+    "primary": "#667eea",
+    "secondary": "#764ba2",
+    "accent": "#ffd700",
+    "text": "#ffffff",
+    "background": "#1a1a2e",
+    "gradient": {
+      "main": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "gold": "linear-gradient(135deg, #ffd700 0%, #ffb700 100%)",
+      "dark": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
+    }
+  },
+  "typography": {
+    "primary": {
+      "family": "Montserrat, Arial, sans-serif",
+      "weight": ["800", "700", "600"],
+      "sizes": ["48px", "36px", "24px", "18px", "14px"]
+    },
+    "secondary": {
+      "family": "Open Sans, Arial, sans-serif",
+      "weight": ["400", "600"],
+      "sizes": ["16px", "14px", "12px"]
+    }
+  },
+  "variants": [
+    {
+      "name": "Light Mode",
+      "background": "#ffffff",
+      "text": "#1a1a2e",
+      "iconColor": "#667eea"
+    },
+    {
+      "name": "Dark Mode",
+      "background": "#1a1a2e",
+      "text": "#ffffff",
+      "iconColor": "#667eea"
+    },
+    {
+      "name": "Print",
+      "grayscale": true,
+      "cmyk": {
+        "cyan": 70,
+        "magenta": 80,
+        "yellow": 20,
+        "black": 20
+      }
+    },
+    {
+      "name": "Monochrome",
+      "colors": ["#000000", "#ffffff"]
+    }
+  ],
+  "usage": {
+    "favicon": {
+      "size": 32,
+      "format": "ico/png"
+    },
+    "header": {
+      "height": 60,
+      "padding": 20
+    },
+    "card": {
+      "size": 120,
+      "background": "#ffffff"
+    },
+    "social": {
+      "size": 150,
+      "formats": ["png", "jpg", "webp"]
+    },
+    "print": {
+      "minResolution": 300,
+      "formats": ["svg", "pdf", "eps"]
+    }
+  },
+  "brandValues": {
+    "trust": "Shield emblem represents security and protection",
+    "global": "Globe element symbolizes worldwide presence",
+    "excellence": "Gold accent conveys premium quality",
+    "innovation": "Modern gradient design shows forward-thinking",
+    "stability": "Strong, balanced composition"
+  },
+  "guidelines": {
+    "minimumSize": "32x32px",
+    "clearSpace": "Logo height x 0.5 on all sides",
+    "backgroundColor": "Use dark background for best contrast",
+    "textColor": "White text on dark backgrounds",
+    "avoid": [
+      "Stretching the logo",
+      "Changing colors",
+      "Adding shadows",
+      "Modifying proportions"
+    ]
+  }
+}

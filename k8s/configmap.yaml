@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bank-config
+  labels:
+    app: bank-api
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+  UPLOAD_MAX_SIZE: "10485760"
+  SESSION_SECRET: "change-this-in-production"

@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amenires World Bank - Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+    }
+
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1e1e3f 0%, #2d2d5a 100%);
+      padding: 20px;
+      color: white;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo i {
+      font-size: 36px;
+      color: #667eea;
+    }
+
+    .logo h2 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-bottom: 8px;
+    }
+
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: rgba(102, 126, 234, 0.2);
+      color: white;
+    }
+
+    .nav-links a.active {
+      border-left: 3px solid #667eea;
+    }
+
+    .nav-links i {
+      font-size: 18px;
+      width: 24px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 30px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .welcome {
+      color: white;
+    }
+
+    .welcome h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .notification {
+      position: relative;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #dc3545;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .card-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .card-trend {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+    }
+
+    .card-trend.positive {
+      color: #28a745;
+    }
+
+    .card-trend.negative {
+      color: #dc3545;
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .stat-icon.blue {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .stat-icon.green {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+    }
+
+    .stat-icon.orange {
+      background: rgba(253, 126, 20, 0.1);
+      color: #fd7e14;
+    }
+
+    .stat-info h3 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .stat-info p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Actions */
+    .actions {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .actions h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .action-btn:hover {
+      border-color: #667eea;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+    }
+
+    .action-btn i {
+      font-size: 24px;
+      color: #667eea;
+    }
+
+    .action-btn span {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    /* Transactions */
+    .transactions {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .transactions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .transactions-header h2 {
+      font-size: 20px;
+    }
+
+    .view-all {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+
+    .transaction-item:hover {
+      background: #e9ecef;
+    }
+
+    .transaction-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .transaction-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .transaction-icon.received {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+    }
+
+    .transaction-icon.sent {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+
+    .transaction-details h4 {
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .transaction-details p {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .transaction-amount {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .transaction-amount.received {
+      color: #28a745;
+    }
+
+    .transaction-amount.sent {
+      color: #dc3545;
+    }
+
+    /* Logout Button */
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 450px;
+      width: 90%;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #e9ecef;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #dee2e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <i class="fas fa-university"></i>
+        <div>
+          <h2>Amenires World Bank</h2>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li>
+          <a href="#" class="active">
+            <i class="fas fa-home"></i>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-wallet"></i>
+            Accounts
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-exchange-alt"></i>
+            Transfers
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-file-invoice-dollar"></i>
+            Payments
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-credit-card"></i>
+            Cards
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-history"></i>
+            Transactions
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-cog"></i>
+            Settings
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <div class="welcome">
+          <h1>Welcome back, <span id="userName">User</span>!</h1>
+          <p>Here's what's happening with your accounts today.</p>
+        </div>
+
+        <div class="user-info">
+          <div class="notification">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </div>
+          <div class="user-avatar" id="userAvatar">
+            U
+          </div>
+          <button class="logout-btn" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="cards-grid">
+        <div class="card balance-card">
+          <p class="card-label">Total Balance</p>
+          <p class="card-value">$24,562.00</p>
+          <div class="card-trend positive">
+            <i class="fas fa-arrow-up"></i>
+            <span>+12.5% from last month</span>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+          <div class="stat-info">
+            <h3>$8,450</h3>
+            <p>Income This Month</p>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-arrow-up"></i>
+          </div>
+          <div class="stat-info">
+            <h3>$3,280</h3>
+            <p>Expenses This Month</p>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-piggy-bank"></i>
+          </div>
+          <div class="stat-info">
+            <h3>$12,832</h3>
+            <p>Total Savings</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+          <button class="action-btn" onclick="openModal('transfer')">
+            <i class="fas fa-paper-plane"></i>
+            <span>Transfer</span>
+          </button>
+          <button class="action-btn" onclick="openModal('deposit')">
+            <i class="fas fa-plus-circle"></i>
+            <span>Deposit</span>
+          </button>
+          <button class="action-btn" onclick="openModal('withdraw')">
+            <i class="fas fa-minus-circle"></i>
+            <span>Withdraw</span>
+          </button>
+          <button class="action-btn" onclick="openModal('pay-bills')">
+            <i class="fas fa-file-invoice"></i>
+            <span>Pay Bills</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="transactions">
+        <div class="transactions-header">
+          <h2>Recent Transactions</h2>
+          <a href="#" class="view-all">View All</a>
+        </div>
+
+        <div class="transaction-list" id="transactionList">
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-icon received">
+                <i class="fas fa-arrow-down"></i>
+              </div>
+              <div class="transaction-details">
+                <h4>Salary Deposit</h4>
+                <p>Direct Deposit - May 1</p>
+              </div>
+            </div>
+            <div class="transaction-amount received">+$5,200.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-icon sent">
+                <i class="fas fa-arrow-up"></i>
+              </div>
+              <div class="transaction-details">
+                <h4>Netflix Subscription</h4>
+                <p>Entertainment - Apr 30</p>
+              </div>
+            </div>
+            <div class="transaction-amount sent">-$15.99</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-icon sent">
+                <i class="fas fa-arrow-up"></i>
+              </div>
+              <div class="transaction-details">
+                <h4>Electric Bill</h4>
+                <p>Utilities - Apr 28</p>
+              </div>
+            </div>
+            <div class="transaction-amount sent">-$120.50</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-icon received">
+                <i class="fas fa-arrow-down"></i>
+              </div>
+              <div class="transaction-details">
+                <h4>Transfer from John</h4>
+                <p>Personal Transfer - Apr 27</p>
+              </div>
+            </div>
+            <div class="transaction-amount received">+$250.00</div>
+          </div>
+
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-icon sent">
+                <i class="fas fa-arrow-up"></i>
+              </div>
+              <div class="transaction-details">
+                <h4>Amazon Purchase</h4>
+                <p>Shopping - Apr 26</p>
+              </div>
+            </div>
+            <div class="transaction-amount sent">-$89.99</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transfer Modal -->
+  <div class="modal" id="transferModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Transfer Money</h2>
+        <button class="close-btn" onclick="closeModal('transfer')">&times;</button>
+      </div>
+      <form onsubmit="handleTransfer(event)">
+        <div class="form-group">
+          <label>From Account</label>
+          <select>
+            <option>Main Account - $24,562.00</option>
+            <option>Savings - $12,832.00</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Recipient Account</label>
+          <input type="text" placeholder="Enter account number" required>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" placeholder="Enter amount" required>
+        </div>
+        <div class="form-group">
+          <label>Reference</label>
+          <input type="text" placeholder="Optional reference">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('transfer')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal" id="depositModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Deposit Money</h2>
+        <button class="close-btn" onclick="closeModal('deposit')">&times;</button>
+      </div>
+      <form onsubmit="handleDeposit(event)">
+        <div class="form-group">
+          <label>To Account</label>
+          <select>
+            <option>Main Account - $24,562.00</option>
+            <option>Savings - $12,832.00</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" placeholder="Enter amount" required>
+        </div>
+        <div class="form-group">
+          <label>Source</label>
+          <select>
+            <option>Cash Deposit</option>
+            <option>Bank Transfer</option>
+            <option>Check</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('deposit')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Deposit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Withdraw Money</h2>
+        <button class="close-btn" onclick="closeModal('withdraw')">&times;</button>
+      </div>
+      <form onsubmit="handleWithdraw(event)">
+        <div class="form-group">
+          <label>From Account</label>
+          <select>
+            <option>Main Account - $24,562.00</option>
+            <option>Savings - $12,832.00</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" placeholder="Enter amount" required>
+        </div>
+        <div class="form-group">
+          <label>Withdrawal Method</label>
+          <select>
+            <option>ATM Withdrawal</option>
+            <option>Bank Transfer</option>
+            <option>Counter Withdrawal</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('withdraw')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Withdraw</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pay Bills Modal -->
+  <div class="modal" id="pay-billsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Pay Bills</h2>
+        <button class="close-btn" onclick="closeModal('pay-bills')">&times;</button>
+      </div>
+      <form onsubmit="handlePayBills(event)">
+        <div class="form-group">
+          <label>Select Bill Type</label>
+          <select required>
+            <option>Electricity</option>
+            <option>Water</option>
+            <option>Internet</option>
+            <option>Phone</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Account Number</label>
+          <input type="text" placeholder="Enter bill account number" required>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" placeholder="Enter amount" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('pay-bills')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Pay Bill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // API Base URL
+    const API_URL = 'http://localhost:3000/api';
+
+    // Check authentication on load
+    window.addEventListener('load', async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      // Load user data and accounts
+      await loadUserData();
+      await loadAccountData();
+    });
+
+    // Load user data
+    async function loadUserData() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/user/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          const data = result.data;
+          document.getElementById('userName').textContent = data.fullName || 'User';
+          document.getElementById('userAvatar').textContent = (data.fullName || 'U')[0].toUpperCase();
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    }
+
+    // Load account data
+    async function loadAccountData() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/user/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          const data = result.data;
+          
+          // Update balance
+          if (data.accounts && data.accounts.length > 0) {
+            const totalBalance = data.accounts.reduce((sum, acc) => sum + acc.balance, 0);
+            const currency = data.accounts[0].currency;
+            
+            document.querySelector('.balance-card .card-value').textContent = 
+              `${currency}${totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            
+            // Update account number display if exists
+            const accountNumber = data.accounts[0].accountNumber;
+            console.log('Account loaded:', accountNumber);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading account data:', error);
+      }
+    }
+
+    // Modal functions
+    function openModal(type) {
+      const modal = document.getElementById(`${type}Modal`);
+      if (modal) {
+        modal.classList.add('show');
+      }
+    }
+
+    function closeModal(type) {
+      const modal = document.getElementById(`${type}Modal`);
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('show');
+      }
+    }
+
+    // Handle transfer
+    function handleTransfer(event) {
+      event.preventDefault();
+      alert('Transfer initiated! In a real application, this would process the transaction.');
+      closeModal('transfer');
+    }
+
+    // Handle deposit
+    function handleDeposit(event) {
+      event.preventDefault();
+      alert('Deposit initiated! In a real application, this would process the deposit.');
+      closeModal('deposit');
+    }
+
+    // Handle withdraw
+    function handleWithdraw(event) {
+      event.preventDefault();
+      alert('Withdrawal initiated! In a real application, this would process the withdrawal.');
+      closeModal('withdraw');
+    }
+
+    // Handle pay bills
+    function handlePayBills(event) {
+      event.preventDefault();
+      alert('Bill payment initiated! In a real application, this would process the payment.');
+      closeModal('pay-bills');
+    }
+
+    // Handle logout
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('token');
+        window.location.href = '/';
+      }
+    }
+  </script>
+</body>
+</html>

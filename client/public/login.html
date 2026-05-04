@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Amenires World Bank - The Strongest & Most Secure Banking System">
+  <title>Login | Amenires World Bank</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #16213e;
+      --accent: #0f3460;
+      --gold: #c9a227;
+      --gold-light: #e8c547;
+      --white: #ffffff;
+      --gray-light: #f5f5f5;
+      --gray: #6c757d;
+      --success: #28a745;
+      --danger: #dc3545;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 1400px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    /* Video Section */
+    .video-section {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(201, 162, 39, 0.3);
+      background: var(--secondary);
+      aspect-ratio: 16/9;
+    }
+
+    .video-section video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(26, 26, 46, 0.95));
+      padding: 30px;
+      color: var(--white);
+    }
+
+    .video-overlay h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: var(--gold);
+    }
+
+    .video-overlay p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    /* Login Form Section */
+    .login-form-section {
+      background: var(--white);
+      padding: 60px 50px;
+      border-radius: 20px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Logo */
+    .logo-container {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+
+    .logo svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo-text {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      margin-bottom: 5px;
+    }
+
+    .logo-subtitle {
+      font-size: 0.85rem;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 600;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid var(--gray-light);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: var(--gray-light);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: var(--white);
+      box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--gray);
+    }
+
+    /* Password Field */
+    .password-field {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 1.2rem;
+      padding: 5px;
+    }
+
+    /* Security Badge */
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 30px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+      border-radius: 10px;
+      color: var(--success);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .security-badge svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--gold) 100%);
+      border: none;
+      border-radius: 12px;
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(201, 162, 39, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Loading State */
+    .submit-btn.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .submit-btn.loading span {
+      display: none;
+    }
+
+    .submit-btn.loading::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--white);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Links */
+    .form-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    .form-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .form-links a:hover {
+      color: var(--gold);
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .remember-me label {
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Error Message */
+    .error-message {
+      display: none;
+      padding: 12px 16px;
+      background: rgba(220, 53, 69, 0.1);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+      border-radius: 10px;
+      color: var(--danger);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .error-message svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    .login-footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .login-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-footer a:hover {
+      color: var(--gold);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .login-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .login-form-section {
+        padding: 40px 30px;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+      }
+      
+      .video-section {
+        display: none;
+      }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* Focus States for Accessibility */
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <main class="login-container" role="main">
+    <!-- Video Section -->
+    <section class="video-section" aria-label="Welcome Video">
+      <video autoplay muted loop playsinline>
+        <source src="/assets/videos/amenires-welcome.mp4" type="video/mp4">
+        <source src="/assets/videos/amenires-welcome.webm" type="video/webm">
+        Your browser does not support video playback.
+      </video>
+      <div class="video-overlay">
+        <h3>Welcome to Amenires World Bank</h3>
+        <p>Banking the Future, Securing the World</p>
+      </div>
+    </section>
+
+    <!-- Login Form Section -->
+    <section class="login-form-section" aria-label="Login Form">
+      <!-- Logo -->
+      <div class="logo-container">
+        <div class="logo">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Amenires World Bank Logo">
+            <!-- Shield Background -->
+            <defs>
+              <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a1a2e"/>
+                <stop offset="50%" style="stop-color:#0f3460"/>
+                <stop offset="100%" style="stop-color:#c9a227"/>
+              </linearGradient>
+            </defs>
+            <path d="M60 10 L100 30 L100 70 C100 95 80 110 60 115 C40 110 20 95 20 70 L20 30 Z" 
+                  fill="url(#shieldGradient)" stroke="#c9a227" stroke-width="2"/>
+            <!-- Globe -->
+            <circle cx="60" cy="60" r="25" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+            <ellipse cx="60" cy="60" rx="25" ry="12" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+            <line x1="60" y1="35" x2="60" y2="85" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+            <line x1="35" y1="60" x2="85" y2="60" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+            <!-- AWB Letters -->
+            <text x="60" y="68" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="800" font-family="Inter">AWB</text>
+          </svg>
+        </div>
+        <h1 class="logo-text">Amenires World Bank</h1>
+        <p class="logo-subtitle">Secure. Innovative. Global.</p>
+      </div>
+
+      <!-- Security Badge -->
+      <div class="security-badge" role="status" aria-live="polite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span>Maximum Security • Multi-Factor Authentication</span>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" id="errorMessage" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="errorText"></span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" method="POST" action="/api/auth/login" novalidate>
+        <div class="form-group">
+          <label for="username" class="form-label">Username or Email</label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            class="form-input" 
+            placeholder="Enter your username or email"
+            required
+            aria-required="true"
+            autocomplete="username"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="password-field">
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Enter your password"
+              required
+              aria-required="true"
+              autocomplete="current-password"
+            >
+            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password" aria-pressed="false">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="form-links">
+          <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember" value="true">
+            <label for="remember">Remember me</label>
+          </div>
+          <a href="/forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span>Secure Login</span>
+        </button>
+      </form>
+
+      <!-- Footer -->
+      <footer class="login-footer">
+        <p>By logging in, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></p>
+        <p style="margin-top: 10px;">Need an account? <a href="/register">Register Now</a></p>
+        <p style="margin-top: 15px; font-size: 0.75rem;">© 2024 Amenires World Bank plc. All rights reserved.</p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    // Password Toggle
+    const passwordToggle = document.getElementById('passwordToggle');
+    const passwordInput = document.getElementById('password');
+
+    passwordToggle.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      passwordToggle.textContent = isPassword ? '🙈' : '👁️';
+      passwordToggle.setAttribute('aria-pressed', !isPassword);
+      passwordToggle.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+    });
+
+    // Form Submission
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Reset error state
+      errorMessage.classList.remove('show');
+      
+      // Get form data
+      const formData = new FormData(loginForm);
+      const data = {
+        username: formData.get('username'),
+        password: formData.get('password'),
+        remember: formData.get('remember') === 'true'
+      };
+
+      // Show loading state
+      submitBtn.classList.add('loading');
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          // Success - redirect to dashboard
+          window.location.href = result.redirectTo || '/dashboard';
+        } else {
+          // Show error
+          submitBtn.classList.remove('loading');
+          errorText.textContent = result.message || 'Login failed. Please try again.';
+          errorMessage.classList.add('show');
+          
+          // Focus on first input
+          document.getElementById('username').focus();
+        }
+      } catch (error) {
+        submitBtn.classList.remove('loading');
+        errorText.textContent = 'Network error. Please check your connection and try again.';
+        errorMessage.classList.add('show');
+      }
+    });
+
+    // Real-time validation
+    const usernameInput = document.getElementById('username');
+    usernameInput.addEventListener('blur', () => {
+      if (usernameInput.value.trim() === '') {
+        usernameInput.setCustomValidity('Username or email is required');
+      } else {
+        usernameInput.setCustomValidity('');
+      }
+    });
+
+    // Accessibility - handle escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && errorMessage.classList.contains('show')) {
+        errorMessage.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>

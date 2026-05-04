@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Amenires World Bank</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .header i {
+      font-size: 56px;
+      margin-bottom: 15px;
+      color: #ffd700;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .form-container {
+      padding: 40px 30px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 15px 14px 45px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .password-group i {
+      left: auto;
+      right: 15px;
+      cursor: pointer;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      cursor: pointer;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .forgot-password:hover {
+      color: #764ba2;
+    }
+
+    .button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button .spinner {
+      display: none;
+      margin-right: 8px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .button.loading .spinner {
+      display: inline-block;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 30px 0;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e9ecef;
+    }
+
+    .divider span {
+      padding: 0 15px;
+    }
+
+    .social-login {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .social-btn {
+      padding: 14px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    .social-btn:hover {
+      border-color: #667eea;
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    .social-btn i {
+      font-size: 20px;
+    }
+
+    .social-btn.google i { color: #ea4335; }
+    .social-btn.facebook i { color: #1877f2; }
+    .social-btn.apple i { color: #000; }
+    .social-btn.linkedin i { color: #0077b5; }
+
+    .alert {
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      display: none;
+      font-size: 14px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .alert i {
+      margin-right: 8px;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .signup-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+
+    .signup-link a:hover {
+      color: #764ba2;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .back-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Security Badge */
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #28a745;
+      margin-top: 15px;
+    }
+
+    .security-badge i {
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .container {
+        border-radius: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <i class="fas fa-university"></i>
+      <h1>Welcome Back</h1>
+      <p>Sign in to your Amenires World Bank account</p>
+      <div class="security-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>256-bit SSL Encrypted</span>
+      </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container">
+      <!-- Alert Box -->
+      <div class="alert" id="alertBox">
+        <i class="fas fa-info-circle"></i>
+        <span id="alertMessage"></span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              placeholder="Enter your email" 
+              required
+              autocomplete="email"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              placeholder="Enter your password" 
+              required
+              autocomplete="current-password"
+            >
+            <i class="fas fa-eye password-toggle" onclick="togglePassword('password', this)"></i>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-password" onclick="showForgotPassword()">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="button" id="loginBtn">
+          <span class="spinner fas fa-spinner"></span>
+          <span>Sign In</span>
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>Or continue with</span>
+      </div>
+
+      <div class="social-login">
+        <button class="social-btn google" onclick="handleSocialLogin('google')">
+          <i class="fab fa-google"></i> Google
+        </button>
+        <button class="social-btn facebook" onclick="handleSocialLogin('facebook')">
+          <i class="fab fa-facebook-f"></i> Facebook
+        </button>
+        <button class="social-btn apple" onclick="handleSocialLogin('apple')">
+          <i class="fab fa-apple"></i> Apple
+        </button>
+        <button class="social-btn linkedin" onclick="handleSocialLogin('linkedin')">
+          <i class="fab fa-linkedin-in"></i> LinkedIn
+        </button>
+      </div>
+
+      <div class="signup-link">
+        Don't have an account? <a href="signup-final.html">Create Account</a>
+      </div>
+
+      <div class="back-link">
+        <a href="index-prod.html">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+
+    // Toggle password visibility
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Show alert message
+    function showAlert(message, type = 'info') {
+      const alertBox = document.getElementById('alertBox');
+      const alertMessage = document.getElementById('alertMessage');
+      
+      alertBox.className = `alert ${type} show`;
+      alertMessage.textContent = message;
+
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        hideAlert();
+      }, 5000);
+    }
+
+    // Hide alert message
+    function hideAlert() {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.classList.remove('show');
+    }
+
+    // Set button loading state
+    function setButtonLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      btn.classList.toggle('loading', loading);
+      btn.disabled = loading;
+    }
+
+    // Handle login
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+
+      setButtonLoading('loginBtn', true);
+      hideAlert();
+
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password, rememberMe }),
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showAlert('Login successful! Redirecting...', 'success');
+          
+          // Store token
+          if (data.data && data.data.token) {
+            localStorage.setItem('token', data.data.token);
+            localStorage.setItem('user', JSON.stringify(data.data.user));
+          }
+
+          // Redirect to dashboard after 1 second
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1000);
+        } else {
+          showAlert(data.message || 'Login failed. Please check your credentials and try again.', 'error');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showAlert('Connection error. Please check your internet connection and try again.', 'error');
+      } finally {
+        setButtonLoading('loginBtn', false);
+      }
+    }
+
+    // Handle social login
+    function handleSocialLogin(provider) {
+      showAlert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login will be available soon!`, 'info');
+      // Social login integration would go here
+    }
+
+    // Show forgot password
+    function showForgotPassword() {
+      showAlert('Password reset link will be sent to your email.', 'info');
+      // Forgot password implementation would go here
+    }
+
+    // Check if already logged in
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        // User is already logged in, redirect to dashboard
+        window.location.href = '/dashboard.html';
+      }
+    });
+
+    // Auto-focus email field
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('email').focus();
+    });
+  </script>
+</body>
+</html>

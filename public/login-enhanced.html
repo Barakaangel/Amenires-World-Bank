@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Amenires World Bank</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Professional Banking Styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .language-selector {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .language-selector select {
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .language-selector select option {
+      background: #1a1a2e;
+      color: white;
+    }
+
+    .auth-container {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    /* Left Side - Branding */
+    .auth-branding {
+      flex: 1;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 60px 50px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      color: #667eea;
+    }
+
+    .logo-text h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .logo-text span {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .tagline {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .features-list {
+      list-style: none;
+      margin-top: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .feature-item i {
+      color: #ffd700;
+      font-size: 18px;
+    }
+
+    /* Right Side - Login Form */
+    .auth-form-section {
+      flex: 1;
+      padding: 60px 50px;
+      max-width: 500px;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h2 {
+      font-size: 28px;
+      color: #1a1a2e;
+      margin-bottom: 10px;
+    }
+
+    .auth-header p {
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    /* Social Login Buttons */
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      background: white;
+      font-size: 15px;
+      font-weight: 600;
+      color: #495057;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .social-btn:hover {
+      background: #f8f9fa;
+      border-color: #dee2e6;
+      transform: translateY(-2px);
+    }
+
+    .social-btn.google {
+      border-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .social-btn.google:hover {
+      background: #eff6ff;
+    }
+
+    .social-btn.facebook {
+      border-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .social-btn.facebook:hover {
+      background: #eff6ff;
+    }
+
+    .social-btn.wechat {
+      border-color: #dcfce7;
+      color: #166534;
+    }
+
+    .social-btn.wechat:hover {
+      background: #f0fdf4;
+    }
+
+    .social-btn i {
+      font-size: 20px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #dee2e6;
+    }
+
+    .divider span {
+      padding: 0 15px;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #343a40;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .remember-me input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 14px;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    /* Signup Link */
+    .signup-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+      color: #6c757d;
+    }
+
+    .signup-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f3f3f3;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .auth-branding {
+        display: none;
+      }
+
+      .auth-form-section {
+        max-width: 100%;
+        padding: 40px 30px;
+      }
+    }
+
+    /* RTL Support */
+    [dir="rtl"] .auth-container {
+      flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .form-group input {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Selector -->
+  <div class="language-selector">
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="en">🇺🇸 English</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="zh">🇨🇳 中文</option>
+      <option value="ja">🇯🇵 日本語</option>
+      <option value="ko">🇰🇷 한국어</option>
+      <option value="ar">🇸🇦 العربية</option>
+      <option value="pt">🇵🇹 Português</option>
+      <option value="ru">🇷🇺 Русский</option>
+    </select>
+  </div>
+
+  <div class="auth-container">
+    <!-- Left Side - Branding -->
+    <div class="auth-branding">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-university"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Amenires World Bank</h1>
+          <span data-i18n="tagline">Secure Banking, Trusted Service</span>
+        </div>
+      </div>
+      
+      <h2 class="tagline" data-i18n="tagline">Secure Banking, Trusted Service</h2>
+      
+      <ul class="features-list">
+        <li class="feature-item">
+          <i class="fas fa-shield-alt"></i>
+          <span data-i18n="feature1">256-bit Encryption</span>
+        </li>
+        <li class="feature-item">
+          <i class="fas fa-lock"></i>
+          <span data-i18n="feature2">Bank-Grade Security</span>
+        </li>
+        <li class="feature-item">
+          <i class="fas fa-headset"></i>
+          <span data-i18n="feature3">24/7 Customer Support</span>
+        </li>
+        <li class="feature-item">
+          <i class="fas fa-globe"></i>
+          <span data-i18n="feature4">Available in 195+ Countries</span>
+        </li>
+        <li class="feature-item">
+          <i class="fas fa-mobile-alt"></i>
+          <span data-i18n="feature5">Mobile Banking App</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="auth-form-section">
+      <div class="auth-header">
+        <h2 data-i18n="loginTitle">Welcome Back!</h2>
+        <p data-i18n="loginSubtitle">Sign in to continue to your account</p>
+      </div>
+
+      <!-- Alert -->
+      <div id="alert" class="alert"></div>
+
+      <!-- Social Login -->
+      <div class="social-login">
+        <button class="social-btn google" onclick="socialLogin('google')">
+          <i class="fab fa-google"></i>
+          <span data-i18n="loginWithGoogle">Continue with Google</span>
+        </button>
+        <button class="social-btn facebook" onclick="socialLogin('facebook')">
+          <i class="fab fa-facebook-f"></i>
+          <span data-i18n="loginWithFacebook">Continue with Facebook</span>
+        </button>
+        <button class="social-btn wechat" onclick="socialLogin('wechat')">
+          <i class="fab fa-weixin"></i>
+          <span data-i18n="loginWithWeChat">Continue with WeChat</span>
+        </button>
+      </div>
+
+      <div class="divider">
+        <span data-i18n="or">OR</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label data-i18n="email">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            placeholder="Enter your email"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember" checked>
+            <span data-i18n="rememberMe">Remember me</span>
+          </label>
+          <a href="#" class="forgot-password" data-i18n="forgotPassword">Forgot Password?</a>
+        </div>
+
+        <button type="submit" id="loginBtn" class="btn-primary">
+          <span data-i18n="login">Login</span>
+        </button>
+      </form>
+
+      <!-- Signup Link -->
+      <div class="signup-link">
+        <span data-i18n="noAccount">Don't have an account?</span>
+        <a href="/signup.html" data-i18n="signUpNow">Sign up now</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Initialize language
+    const savedLang = localStorage.getItem('language') || 'en';
+    document.getElementById('languageSelect').value = savedLang;
+    changeLanguage(savedLang);
+
+    // Language change handler
+    function changeLanguage(lang) {
+      localStorage.setItem('language', lang);
+      document.documentElement.lang = lang;
+      
+      // RTL support
+      if (lang === 'ar') {
+        document.body.dir = 'rtl';
+      } else {
+        document.body.dir = 'ltr';
+      }
+
+      // Update all i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const translation = getTranslation(key, lang);
+        if (translation) {
+          el.textContent = translation;
+        }
+      });
+    }
+
+    // Translation function
+    function getTranslation(key, lang = 'en') {
+      const translations = {
+        en: {
+          tagline: 'Secure Banking, Trusted Service',
+          feature1: '256-bit Encryption',
+          feature2: 'Bank-Grade Security',
+          feature3: '24/7 Customer Support',
+          feature4: 'Available in 195+ Countries',
+          feature5: 'Mobile Banking App',
+          loginTitle: 'Welcome Back!',
+          loginSubtitle: 'Sign in to continue to your account',
+          loginWithGoogle: 'Continue with Google',
+          loginWithFacebook: 'Continue with Facebook',
+          loginWithWeChat: 'Continue with WeChat',
+          or: 'OR',
+          email: 'Email Address',
+          password: 'Password',
+          rememberMe: 'Remember me',
+          forgotPassword: 'Forgot Password?',
+          login: 'Login',
+          noAccount: "Don't have an account?",
+          signUpNow: 'Sign up now'
+        },
+        zh: {
+          tagline: '安全银行，值得信赖',
+          feature1: '256位加密',
+          feature2: '银行级安全',
+          feature3: '24/7客户支持',
+          feature4: '覆盖195+国家',
+          feature5: '移动银行应用',
+          loginTitle: '欢迎回来!',
+          loginSubtitle: '登录以继续访问您的账户',
+          loginWithGoogle: '使用Google登录',
+          loginWithFacebook: '使用Facebook登录',
+          loginWithWeChat: '使用微信登录',
+          or: '或',
+          email: '电子邮箱',
+          password: '密码',
+          rememberMe: '记住我',
+          forgotPassword: '忘记密码?',
+          login: '登录',
+          noAccount: '还没有账户?',
+          signUpNow: '立即注册'
+        },
+        es: {
+          tagline: 'Banca Segura, Servicio de Confianza',
+          loginTitle: '¡Bienvenido de nuevo!',
+          loginWithGoogle: 'Continuar con Google',
+          loginWithFacebook: 'Continuar con Facebook',
+          loginWithWeChat: 'Continuar con WeChat',
+          or: 'O',
+          email: 'Correo electrónico',
+          password: 'Contraseña',
+          rememberMe: 'Recordarme',
+          login: 'Iniciar sesión',
+          noAccount: '¿No tienes una cuenta?',
+          signUpNow: 'Regístrate ahora'
+        },
+        fr: {
+          tagline: 'Banque Sécurisée, Service de Confiance',
+          loginTitle: 'Bon retour!',
+          loginWithGoogle: 'Continuer avec Google',
+          loginWithFacebook: 'Continuer avec Facebook',
+          loginWithWeChat: 'Continuer avec WeChat',
+          or: 'OU',
+          email: 'Adresse e-mail',
+          password: 'Mot de passe',
+          rememberMe: 'Se souvenir de moi',
+          login: 'Connexion',
+          noAccount: 'Vous n\'avez pas de compte?',
+          signUpNow: 'Inscrivez-vous maintenant'
+        },
+        de: {
+          tagline: 'Sicheres Banking, Vertrauenswürdiger Service',
+          loginTitle: 'Willkommen zurück!',
+          loginWithGoogle: 'Mit Google fortfahren',
+          loginWithFacebook: 'Mit Facebook fortfahren',
+          loginWithWeChat: 'Mit WeChat fortfahren',
+          or: 'ODER',
+          email: 'E-Mail-Adresse',
+          password: 'Passwort',
+          rememberMe: 'Angemeldet bleiben',
+          login: 'Anmelden',
+          noAccount: 'Haben Sie kein Konto?',
+          signUpNow: 'Jetzt registrieren'
+        },
+        ja: {
+          tagline: '安全な銀行、信頼できるサービス',
+          loginTitle: 'おかえりなさい!',
+          loginWithGoogle: 'Googleで続ける',
+          loginWithFacebook: 'Facebookで続ける',
+          loginWithWeChat: 'WeChatで続ける',
+          or: 'または',
+          email: 'メールアドレス',
+          password: 'パスワード',
+          rememberMe: 'ログイン状態を保持',
+          login: 'ログイン',
+          noAccount: 'アカウントをお持ちでない?',
+          signUpNow: '今すぐ登録'
+        },
+        ko: {
+          tagline: '안전한 뱅킹, 신뢰할 수 있는 서비스',
+          loginTitle: '환영합니다!',
+          loginWithGoogle: 'Google로 계속',
+          loginWithFacebook: 'Facebook로 계속',
+          loginWithWeChat: 'WeChat로 계속',
+          or: '또는',
+          email: '이메일',
+          password: '비밀번호',
+          rememberMe: '로그인 유지',
+          login: '로그인',
+          noAccount: '계정이 없으신가요?',
+          signUpNow: '지금 가입하세요'
+        },
+        ar: {
+          tagline: 'بنك آمن، خدمة موثوقة',
+          loginTitle: 'مرحباً بعودتك!',
+          loginWithGoogle: 'المتابعة بواسطة جوجل',
+          loginWithFacebook: 'المتابعة بواسطة فيسبوك',
+          loginWithWeChat: 'المتابعة بواسطة وي تشات',
+          or: 'أو',
+          email: 'البريد الإلكتروني',
+          password: 'كلمة المرور',
+          rememberMe: 'تذكرني',
+          login: 'تسجيل الدخول',
+          noAccount: 'ليس لديك حساب؟',
+          signUpNow: 'سجل الآن'
+        },
+        pt: {
+          tagline: 'Banco Seguro, Serviço Confiável',
+          loginTitle: 'Bem-vindo de volta!',
+          loginWithGoogle: 'Continuar com Google',
+          loginWithFacebook: 'Continuar com Facebook',
+          loginWithWeChat: 'Continuar com WeChat',
+          or: 'OU',
+          email: 'Endereço de e-mail',
+          password: 'Senha',
+          rememberMe: 'Lembrar-me',
+          login: 'Entrar',
+          noAccount: 'Não tem uma conta?',
+          signUpNow: 'Cadastre-se agora'
+        },
+        ru: {
+          tagline: 'Безопасный банкинг, надежный сервис',
+          loginTitle: 'С возвращением!',
+          loginWithGoogle: 'Продолжить с Google',
+          loginWithFacebook: 'Продолжить с Facebook',
+          loginWithWeChat: 'Продолжить с WeChat',
+          or: 'ИЛИ',
+          email: 'Электронная почта',
+          password: 'Пароль',
+          rememberMe: 'Запомнить меня',
+          login: 'Войти',
+          noAccount: 'Нет аккаунта?',
+          signUpNow: 'Зарегистрироваться сейчас'
+        }
+      };
+
+      return translations[lang]?.[key] || translations.en[key] || key;
+    }
+
+    // Social login handler
+    function socialLogin(provider) {
+      const lang = localStorage.getItem('language') || 'en';
+      
+      // Store social login provider
+      localStorage.setItem('socialProvider', provider);
+      localStorage.setItem('socialLoginTime', Date.now());
+      
+      // In production, this would redirect to OAuth provider
+      // For demo, we'll show a message
+      if (provider === 'google') {
+        showAlert('Google OAuth would redirect here. In production, this will authenticate with your Google account.', 'info');
+      } else if (provider === 'facebook') {
+        showAlert('Facebook OAuth would redirect here. In production, this will authenticate with your Facebook account.', 'info');
+      } else if (provider === 'wechat') {
+        showAlert('WeChat OAuth would redirect here. In production, this will authenticate with your WeChat account.', 'info');
+      }
+      
+      console.log(`Social login initiated: ${provider}`);
+      console.log(`Language: ${lang}`);
+      
+      // For demo purposes, simulate successful social login
+      setTimeout(() => {
+        // Check if there's an existing account linked to this social ID
+        const existingUser = localStorage.getItem('user');
+        
+        if (existingUser) {
+          showAlert(`Welcome back! Logged in with ${provider.charAt(0).toUpperCase() + provider.slice(1)}`, 'success');
+          
+          // Store session info
+          localStorage.setItem('currentSession', JSON.stringify({
+            provider: provider,
+            loginTime: Date.now(),
+            persist: true
+          }));
+          
+          // Redirect to dashboard after delay
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 2000);
+        } else {
+          // New user - redirect to signup with social info
+          showAlert(`New ${provider} account. Please complete your registration.`, 'info');
+          window.location.href = `/signup.html?provider=${provider}`;
+        }
+      }, 1000);
+    }
+
+    // Alert function
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert alert-${type} show`;
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
