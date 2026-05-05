@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amenires World Bank - Complete Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; }
+    .dashboard { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; background: linear-gradient(180deg, #1e1e3f 0%, #2d2d5a 100%); padding: 20px; color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .logo i { font-size: 36px; color: #ffd700; }
+    .logo h2 { font-size: 18px; font-weight: 600; }
+    .nav-links { list-style: none; }
+    .nav-links li { margin-bottom: 8px; }
+    .nav-links a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.7); text-decoration: none; border-radius: 10px; transition: all 0.3s; }
+    .nav-links a:hover, .nav-links a.active { background: rgba(102, 126, 234, 0.2); color: white; }
+    .nav-links a.active { border-left: 3px solid #667eea; }
+    .nav-links i { font-size: 18px; width: 24px; }
+    .main-content { flex: 1; margin-left: 280px; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .welcome h1 { font-size: 28px; color: white; margin-bottom: 5px; }
+    .welcome p { color: rgba(255,255,255,0.7); font-size: 14px; }
+    .user-info { display: flex; align-items: center; gap: 15px; }
+    .currency-selector { display: flex; gap: 10px; align-items: center; }
+    .currency-btn { padding: 8px 16px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-size: 14px; }
+    .currency-btn:hover, .currency-btn.active { background: #ffd700; color: #1a1a2e; border-color: #ffd700; }
+    .notification { position: relative; color: white; font-size: 20px; cursor: pointer; }
+    .notification-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; }
+    .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .card { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transition: all 0.3s; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
+    .balance-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .card-label { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+    .card-value { font-size: 36px; font-weight: 700; margin-bottom: 15px; }
+    .card-trend { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+    .card-trend.positive { color: #28a745; }
+    .stat-card { display: flex; align-items: center; gap: 15px; }
+    .stat-icon { width: 55px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .stat-icon.blue { background: rgba(102, 126, 234, 0.1); color: #667eea; }
+    .stat-icon.green { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+    .stat-icon.orange { background: rgba(253, 126, 20, 0.1); color: #fd7e14; }
+    .stat-icon.purple { background: rgba(118, 75, 162, 0.1); color: #764ba2; }
+    .stat-info h3 { font-size: 24px; margin-bottom: 5px; color: #333; }
+    .stat-info p { font-size: 14px; color: #666; }
+    .accounts-section { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .section-header h2 { font-size: 20px; color: #333; }
+    .accounts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+    .account-card { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; padding: 20px; border: 1px solid #dee2e6; transition: all 0.3s; }
+    .account-card:hover { transform: translateY(-3px); border-color: #667eea; box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2); }
+    .account-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .account-type { font-weight: 600; color: #333; font-size: 16px; }
+    .account-currency { padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; color: white; }
+    .account-number { font-size: 13px; color: #666; margin-bottom: 10px; font-family: monospace; }
+    .account-balance { font-size: 28px; font-weight: 700; color: #333; margin-bottom: 5px; }
+    .account-available { font-size: 12px; color: #666; }
+    .actions { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+    .actions h2 { font-size: 20px; margin-bottom: 20px; color: #333; }
+    .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+    .action-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px; border: 2px solid #e9ecef; border-radius: 12px; background: white; cursor: pointer; transition: all 0.3s; }
+    .action-btn:hover { border-color: #667eea; transform: translateY(-3px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2); }
+    .action-btn i { font-size: 28px; color: #667eea; }
+    .action-btn span { font-size: 14px; font-weight: 600; color: #333; }
+    .transactions { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+    .transactions-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .transactions-header h2 { font-size: 20px; color: #333; }
+    .view-all { color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; }
+    .transaction-list { display: flex; flex-direction: column; gap: 12px; }
+    .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 10px; transition: all 0.3s; }
+    .transaction-item:hover { background: #e9ecef; }
+    .transaction-info { display: flex; align-items: center; gap: 15px; }
+    .transaction-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .transaction-icon.received { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+    .transaction-icon.sent { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+    .transaction-icon.exchange { background: rgba(102, 126, 234, 0.1); color: #667eea; }
+    .transaction-details h4 { font-size: 14px; margin-bottom: 3px; color: #333; }
+    .transaction-details p { font-size: 12px; color: #666; }
+    .transaction-amount { font-size: 16px; font-weight: 700; }
+    .transaction-amount.received { color: #28a745; }
+    .transaction-amount.sent { color: #dc3545; }
+    .logout-btn { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; }
+    .logout-btn:hover { background: #c82333; transform: translateY(-2px); }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal-content { background: white; border-radius: 15px; padding: 30px; max-width: 500px; width: 90%; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { font-size: 20px; color: #333; }
+    .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #333; font-weight: 600; }
+    .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #667eea; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); }
+    .btn-secondary { background: #e9ecef; color: #333; }
+    .btn-secondary:hover { background: #dee2e6; }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="logo"><i class="fas fa-university"></i><div><h2>Amenires World Bank</h2></div></div>
+      <ul class="nav-links">
+        <li><a href="#" class="active"><i class="fas fa-home"></i>Dashboard</a></li>
+        <li><a href="#"><i class="fas fa-wallet"></i>Accounts</a></li>
+        <li><a href="#"><i class="fas fa-exchange-alt"></i>Transfers</a></li>
+        <li><a href="#"><i class="fas fa-file-invoice-dollar"></i>Payments</a></li>
+        <li><a href="#"><i class="fas fa-credit-card"></i>Cards</a></li>
+        <li><a href="#"><i class="fas fa-coins"></i>Exchange</a></li>
+        <li><a href="#"><i class="fas fa-history"></i>Transactions</a></li>
+        <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+      </ul>
+    </div>
+    <div class="main-content">
+      <div class="header">
+        <div class="welcome">
+          <h1>Welcome back, <span id="userName">User</span>!</h1>
+          <p>Manage your global banking across 50+ currencies</p>
+        </div>
+        <div class="user-info">
+          <div class="currency-selector">
+            <button class="currency-btn active" onclick="switchCurrency('USD')">USD</button>
+            <button class="currency-btn" onclick="switchCurrency('EUR')">EUR</button>
+            <button class="currency-btn" onclick="switchCurrency('GBP')">GBP</button>
+          </div>
+          <div class="notification"><i class="fas fa-bell"></i><span class="notification-badge">3</span></div>
+          <div class="user-avatar" id="userAvatar">U</div>
+          <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+      </div>
+      <div class="cards-grid">
+        <div class="card balance-card"><p class="card-label">Total Balance</p><p class="card-value" id="totalBalance">$24,562.00</p><div class="card-trend positive"><i class="fas fa-arrow-up"></i><span>+12.5% from last month</span></div></div>
+        <div class="card stat-card"><div class="stat-icon blue"><i class="fas fa-arrow-down"></i></div><div class="stat-info"><h3>$8,450</h3><p>Income This Month</p></div></div>
+        <div class="card stat-card"><div class="stat-icon orange"><i class="fas fa-arrow-up"></i></div><div class="stat-info"><h3>$3,280</h3><p>Expenses This Month</p></div></div>
+        <div class="card stat-card"><div class="stat-icon green"><i class="fas fa-piggy-bank"></i></div><div class="stat-info"><h3>$12,832</h3><p>Total Savings</p></div></div>
+      </div>
+      <div class="accounts-section">
+        <div class="section-header"><h2>Multi-Currency Accounts</h2><a href="#" class="view-all">View All Accounts</a></div>
+        <div class="accounts-grid">
+          <div class="account-card"><div class="account-header"><div class="account-type">USD Account</div><span class="account-currency" style="background: #667eea;">USD</span></div><div class="account-number">**** **** **** 4582</div><div class="account-balance">$24,562.00</div><div class="account-available">Available: $24,562.00</div></div>
+          <div class="account-card"><div class="account-header"><div class="account-type">EUR Account</div><span class="account-currency" style="background: #28a745;">EUR</span></div><div class="account-number">**** **** **** 7891</div><div class="account-balance">€22,596.00</div><div class="account-available">Available: €22,596.00</div></div>
+          <div class="account-card"><div class="account-header"><div class="account-type">GBP Account</div><span class="account-currency" style="background: #dc3545;">GBP</span></div><div class="account-number">**** **** **** 3264</div><div class="account-balance">£19,404.00</div><div class="account-available">Available: £19,404.00</div></div>
+          <div class="account-card" style="border: 2px dashed #667eea; cursor: pointer;" onclick="openModal('add-account')"><div style="text-align: center; padding: 30px;"><i class="fas fa-plus-circle" style="font-size: 40px; color: #667eea; margin-bottom: 10px;"></i><div style="color: #667eea; font-weight: 600;">Add New Currency</div><div style="font-size: 12px; color: #666; margin-top: 5px;">Choose from 50+ currencies</div></div></div>
+        </div>
+      </div>
+      <div class="actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+          <button class="action-btn" onclick="openModal('transfer')"><i class="fas fa-paper-plane"></i><span>Transfer</span></button>
+          <button class="action-btn" onclick="openModal('deposit')"><i class="fas fa-plus-circle"></i><span>Deposit</span></button>
+          <button class="action-btn" onclick="openModal('withdraw')"><i class="fas fa-minus-circle"></i><span>Withdraw</span></button>
+          <button class="action-btn" onclick="openModal('exchange')"><i class="fas fa-exchange-alt"></i><span>Currency Exchange</span></button>
+          <button class="action-btn" onclick="openModal('pay-bills')"><i class="fas fa-file-invoice"></i><span>Pay Bills</span></button>
+          <button class="action-btn" onclick="openModal('add-account')"><i class="fas fa-plus-square"></i><span>Add Account</span></button>
+        </div>
+      </div>
+      <div class="transactions">
+        <div class="transactions-header"><h2>Recent Transactions</h2><a href="#" class="view-all">View All</a></div>
+        <div class="transaction-list">
+          <div class="transaction-item"><div class="transaction-info"><div class="transaction-icon received"><i class="fas fa-arrow-down"></i></div><div class="transaction-details"><h4>Salary Deposit</h4><p>Direct Deposit - May 1, 2026</p></div></div><div class="transaction-amount received">+$5,200.00</div></div>
+          <div class="transaction-item"><div class="transaction-info"><div class="transaction-icon sent"><i class="fas fa-arrow-up"></i></div><div class="transaction-details"><h4>Netflix Subscription</h4><p>Entertainment - Apr 30, 2026</p></div></div><div class="transaction-amount sent">-$15.99</div></div>
+          <div class="transaction-item"><div class="transaction-info"><div class="transaction-icon exchange"><i class="fas fa-exchange-alt"></i></div><div class="transaction-details"><h4>Currency Exchange</h4><p>USD to EUR - Apr 29, 2026</p></div></div><div class="transaction-amount">€1,000.00</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="transferModal"><div class="modal-content"><div class="modal-header"><h2>Transfer Money</h2><button class="close-btn" onclick="closeModal('transfer')">&times;</button></div><form onsubmit="handleTransfer(event)"><div class="form-group"><label>From Account</label><select><option>USD Account - $24,562.00</option><option>EUR Account - €22,596.00</option><option>GBP Account - £19,404.00</option></select></div><div class="form-group"><label>Recipient Account</label><input type="text" placeholder="Enter account number" required></div><div class="form-group"><label>Amount</label><input type="number" placeholder="Enter amount" required></div><div class="form-group"><label>Currency</label><select><option>USD</option><option>EUR</option><option>GBP</option></select></div><div class="form-group"><label>Reference</label><input type="text" placeholder="Optional reference"></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('transfer')">Cancel</button><button type="submit" class="btn btn-primary">Transfer</button></div></form></div></div>
+  <div class="modal" id="depositModal"><div class="modal-content"><div class="modal-header"><h2>Deposit Money</h2><button class="close-btn" onclick="closeModal('deposit')">&times;</button></div><form onsubmit="handleDeposit(event)"><div class="form-group"><label>To Account</label><select><option>USD Account - $24,562.00</option><option>EUR Account - €22,596.00</option><option>GBP Account - £19,404.00</option></select></div><div class="form-group"><label>Amount</label><input type="number" placeholder="Enter amount" required></div><div class="form-group"><label>Source</label><select><option>Cash Deposit</option><option>Bank Transfer</option><option>Check</option></select></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('deposit')">Cancel</button><button type="submit" class="btn btn-primary">Deposit</button></div></form></div></div>
+  <div class="modal" id="withdrawModal"><div class="modal-content"><div class="modal-header"><h2>Withdraw Money</h2><button class="close-btn" onclick="closeModal('withdraw')">&times;</button></div><form onsubmit="handleWithdraw(event)"><div class="form-group"><label>From Account</label><select><option>USD Account - $24,562.00</option><option>EUR Account - €22,596.00</option><option>GBP Account - £19,404.00</option></select></div><div class="form-group"><label>Amount</label><input type="number" placeholder="Enter amount" required></div><div class="form-group"><label>Withdrawal Method</label><select><option>ATM Withdrawal</option><option>Bank Transfer</option><option>Counter Withdrawal</option></select></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('withdraw')">Cancel</button><button type="submit" class="btn btn-primary">Withdraw</button></div></form></div></div>
+  <div class="modal" id="exchangeModal"><div class="modal-content"><div class="modal-header"><h2>Currency Exchange</h2><button class="close-btn" onclick="closeModal('exchange')">&times;</button></div><form onsubmit="handleExchange(event)"><div class="form-group"><label>From Currency</label><select><option>USD - $24,562.00 available</option><option>EUR - €22,596.00 available</option><option>GBP - £19,404.00 available</option></select></div><div class="form-group"><label>To Currency</label><select><option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option><option>CNY</option><option>INR</option></select></div><div class="form-group"><label>Amount</label><input type="number" placeholder="Enter amount" required></div><div class="form-group"><label>Exchange Rate</label><div style="background: #f8f9fa; padding: 10px; border-radius: 8px;"><strong>1 USD = 0.92 EUR</strong><div style="font-size: 12px; color: #666; margin-top: 5px;">Rate valid for 30 seconds</div></div></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('exchange')">Cancel</button><button type="submit" class="btn btn-primary">Exchange</button></div></form></div></div>
+  <div class="modal" id="pay-billsModal"><div class="modal-content"><div class="modal-header"><h2>Pay Bills</h2><button class="close-btn" onclick="closeModal('pay-bills')">&times;</button></div><form onsubmit="handlePayBills(event)"><div class="form-group"><label>Select Bill Type</label><select required><option>Electricity</option><option>Water</option><option>Internet</option><option>Phone</option><option>Other</option></select></div><div class="form-group"><label>Account Number</label><input type="text" placeholder="Enter bill account number" required></div><div class="form-group"><label>Amount</label><input type="number" placeholder="Enter amount" required></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('pay-bills')">Cancel</button><button type="submit" class="btn btn-primary">Pay Bill</button></div></form></div></div>
+  <div class="modal" id="add-accountModal"><div class="modal-content"><div class="modal-header"><h2>Add New Currency Account</h2><button class="close-btn" onclick="closeModal('add-account')">&times;</button></div><form onsubmit="handleAddAccount(event)"><div class="form-group"><label>Select Currency (50+ Available)</label><select required><option value="USD">USD - US Dollar</option><option value="EUR">EUR - Euro</option><option value="GBP">GBP - British Pound</option><option value="JPY">JPY - Japanese Yen</option><option value="CNY">CNY - Chinese Yuan</option><option value="INR">INR - Indian Rupee</option><option value="AUD">AUD - Australian Dollar</option><option value="CAD">CAD - Canadian Dollar</option><option value="CHF">CHF - Swiss Franc</option><option value="KRW">KRW - South Korean Won</option><option value="SGD">SGD - Singapore Dollar</option><option value="HKD">HKD - Hong Kong Dollar</option><option value="NZD">NZD - New Zealand Dollar</option><option value="SEK">SEK - Swedish Krona</option><option value="NOK">NOK - Norwegian Krone</option><option value="DKK">DKK - Danish Krone</option><option value="PLN">PLN - Polish Zloty</option><option value="RUB">RUB - Russian Ruble</option><option value="UAH">UAH - Ukrainian Hryvnia</option><option value="BRL">BRL - Brazilian Real</option><option value="MXN">MXN - Mexican Peso</option><option value="ARS">ARS - Argentine Peso</option><option value="CLP">CLP - Chilean Peso</option><option value="COP">COP - Colombian Peso</option><option value="PEN">PEN - Peruvian Sol</option><option value="ZAR">ZAR - South African Rand</option><option value="EGP">EGP - Egyptian Pound</option><option value="NGN">NGN - Nigerian Naira</option><option value="KES">KES - Kenyan Shilling</option><option value="GHS">GHS - Ghanaian Cedi</option><option value="SAR">SAR - Saudi Riyal</option><option value="AED">AED - UAE Dirham</option><option value="QAR">QAR - Qatari Riyal</option><option value="KWD">KWD - Kuwaiti Dinar</option><option value="BHD">BHD - Bahraini Dinar</option><option value="OMR">OMR - Omani Rial</option><option value="THB">THB - Thai Baht</option><option value="VND">VND - Vietnamese Dong</option><option value="IDR">IDR - Indonesian Rupiah</option><option value="MYR">MYR - Malaysian Ringgit</option><option value="PHP">PHP - Philippine Peso</option></select></div><div class="form-group"><label>Account Type</label><select required><option>Checking Account</option><option>Savings Account</option><option>Investment Account</option></select></div><div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('add-account')">Cancel</button><button type="submit" class="btn btn-primary">Add Account</button></div></form></div></div>
+  <script>
+    const demoUser = { fullName: 'Demo User', email: 'demo@amenires.worldbank.com' };
+    const balances = { USD: 24562.00, EUR: 22596.00, GBP: 19404.00 };
+    window.addEventListener('load', () => { document.getElementById('userName').textContent = demoUser.fullName; document.getElementById('userAvatar').textContent = (demoUser.fullName || 'U')[0].toUpperCase(); });
+    function switchCurrency(currency) { document.querySelectorAll('.currency-btn').forEach(btn => { btn.classList.remove('active'); if (btn.textContent === currency) btn.classList.add('active'); }); const balance = balances[currency]; const symbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '£'; document.getElementById('totalBalance').textContent = `${symbol}${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`; }
+    function openModal(type) { const modal = document.getElementById(`${type}Modal`); if (modal) modal.classList.add('show'); }
+    function closeModal(type) { const modal = document.getElementById(`${type}Modal`); if (modal) modal.classList.remove('show'); }
+    window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.classList.remove('show'); }
+    function handleTransfer(event) { event.preventDefault(); alert('Transfer initiated successfully!'); closeModal('transfer'); }
+    function handleDeposit(event) { event.preventDefault(); alert('Deposit initiated successfully!'); closeModal('deposit'); }
+    function handleWithdraw(event) { event.preventDefault(); alert('Withdrawal initiated successfully!'); closeModal('withdraw'); }
+    function handleExchange(event) { event.preventDefault(); alert('Currency exchange initiated successfully!'); closeModal('exchange'); }
+    function handlePayBills(event) { event.preventDefault(); alert('Bill payment initiated successfully!'); closeModal('pay-bills'); }
+    function handleAddAccount(event) { event.preventDefault(); alert('New currency account opened successfully!'); closeModal('add-account'); }
+    function handleLogout() { if (confirm('Are you sure you want to logout?')) window.location.href = 'index-complete.html'; }
+  </script>
+</body>
+</html>
