@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Status - Amenires World Bank</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .status-icon.pending {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .status-icon.active {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-icon.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-info {
+            flex: 1;
+        }
+
+        .status-info h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .status-info p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .status-url {
+            color: #667eea;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .status-url:hover {
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .demo-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .demo-box h3 {
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+
+        .demo-box code {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #ffc107;
+            font-family: 'Courier New', monospace;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .instructions h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .instructions a {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .status-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .status-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Deployment Status Dashboard</h1>
+            <p>Amenires World Bank - Real-Time Deployment Monitoring</p>
+        </div>
+
+        <div class="status-card">
+            <div class="status-item">
+                <div class="status-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="status-info">
+                    <h3>GitHub Pages</h3>
+                    <p><strong>Status:</strong> Awaiting Manual Activation</p>
+                    <p><strong>URL:</strong> <a href="https://barakaangel.github.io/Amenires-World-Bank/" target="_blank" class="status-url">https://barakaangel.github.io/Amenires-World-Bank/</a></p>
+                    <div class="action-buttons">
+                        <a href="https://github.com/Barakaangel/Amenires-World-Bank/settings/pages" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Enable GitHub Pages
+                        </a>
+                        <a href="https://github.com/Barakaangel/Amenires-World-Bank/actions" target="_blank" class="btn btn-secondary">
+                            <i class="fas fa-list"></i> View Actions
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-item">
+                <div class="status-icon pending">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Netlify</h3>
+                    <p><strong>Status:</strong> Ready for Deployment</p>
+                    <p><strong>URL:</strong> <a href="https://amenires-world-bank.netlify.app" target="_blank" class="status-url">https://amenires-world-bank.netlify.app</a></p>
+                    <div class="action-buttons">
+                        <a href="https://app.netlify.com/drop" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-cloud-upload-alt"></i> Deploy Now (Drag & Drop)
+                        </a>
+                        <a href="https://app.netlify.com/" target="_blank" class="btn btn-secondary">
+                            <i class="fas fa-cog"></i> Connect GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-item">
+                <div class="status-icon pending">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Vercel</h3>
+                    <p><strong>Status:</strong> Ready for Deployment</p>
+                    <p><strong>URL:</strong> <a href="https://amenires-world-bank.vercel.app" target="_blank" class="status-url">https://amenires-world-bank.vercel.app</a></p>
+                    <div class="action-buttons">
+                        <a href="https://vercel.com/new" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Deploy Now
+                        </a>
+                        <a href="https://vercel.com/dashboard" target="_blank" class="btn btn-secondary">
+                            <i class="fas fa-cog"></i> View Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <div class="demo-box">
+                <h3><i class="fas fa-key"></i> Demo Credentials for Testing</h3>
+                <p><strong>Email:</strong> <code>demo@amenires.worldbank.com</code></p>
+                <p><strong>Password:</strong> <code>demo123</code></p>
+                <p style="margin-top: 10px;">Use these credentials to test any deployed site.</p>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <div class="instructions">
+                <h2>📋 Quick Deployment Instructions</h2>
+
+                <h3>1. GitHub Pages (2-5 minutes)</h3>
+                <ol>
+                    <li>Click "Enable GitHub Pages" button above</li>
+                    <li>Select "Deploy from a branch"</li>
+                    <li>Choose <strong>main</strong> branch and <strong>/root</strong> folder</li>
+                    <li>Click <strong>Save</strong></li>
+                    <li>Wait 2-5 minutes for deployment</li>
+                    <li>Visit: <a href="https://barakaangel.github.io/Amenires-World-Bank/" target="_blank">https://barakaangel.github.io/Amenires-World-Bank/</a></li>
+                </ol>
+
+                <h3>2. Netlify (30 seconds - Fastest!)</h3>
+                <ol>
+                    <li>Click "Deploy Now (Drag & Drop)" button above</li>
+                    <li>Open the <code>public</code> folder in your project</li>
+                    <li>Drag and drop the entire <code>public</code> folder to Netlify</li>
+                    <li>Your site is <strong>INSTANTLY</strong> live!</li>
+                    <li>Rename the site to: <code>amenires-world-bank</code></li>
+                    <li>Visit: <a href="https://amenires-world-bank.netlify.app" target="_blank">https://amenires-world-bank.netlify.app</a></li>
+                </ol>
+
+                <h3>3. Vercel (1-2 minutes)</h3>
+                <ol>
+                    <li>Click "Deploy Now" button above</li>
+                    <li>Continue with GitHub and authorize Vercel</li>
+                    <li>Select: <code>Barakaangel/Amenires-World-Bank</code></li>
+                    <li>Framework: <strong>Other</strong></li>
+                    <li>Root Directory: <strong>./</strong></li>
+                    <li>Output Directory: <strong>public</strong></li>
+                    <li>Click <strong>Deploy</strong></li>
+                    <li>Visit: <a href="https://amenires-world-bank.vercel.app" target="_blank">https://amenires-world-bank.vercel.app</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h2 style="text-align: center; color: #333; margin-bottom: 20px;">🔧 Troubleshooting</h2>
+            <div class="instructions">
+                <h3>GitHub Pages Shows 404?</h3>
+                <p>Make sure you've enabled Pages in repository settings. Visit <a href="https://github.com/Barakaangel/Amenires-World-Bank/settings/pages" target="_blank">Settings → Pages</a> and enable for main branch.</p>
+
+                <h3>Netlify Shows "Site Not Found"?</h3>
+                <p>The site hasn't been deployed yet. Use drag & drop at <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a> with your <code>public</code> folder.</p>
+
+                <h3>Vercel Shows "Deployment Not Found"?</h3>
+                <p>Import the repository first. Go to <a href="https://vercel.com/new" target="_blank">vercel.com/new</a> and import <code>Barakaangel/Amenires-World-Bank</code>.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: white; margin-top: 40px;">
+            <p>&copy; 2026 Amenires World Bank. All rights reserved.</p>
+            <p style="margin-top: 10px;">
+                <a href="index.html" style="color: white; text-decoration: none; margin: 0 10px;">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>
