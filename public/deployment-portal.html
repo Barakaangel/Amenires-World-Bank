@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenires World Bank - Deployment Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .deployments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .deployment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .deployment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .platform-logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .platform-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .platform-url {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .status-setup {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .status-live {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .access-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .access-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .credentials {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+        
+        .credentials h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        
+        .credential-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .credential-item h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .credential-item p {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .credential-item strong {
+            color: #667eea;
+        }
+        
+        .features {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .features h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .feature-item p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .deployments {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Amenires World Bank</h1>
+            <p>Professional Banking Application - Live Deployment Portal</p>
+        </div>
+        
+        <div class="deployments">
+            <!-- Netlify -->
+            <div class="deployment-card">
+                <div class="platform-logo">🚀</div>
+                <div class="platform-name">Netlify</div>
+                <div class="status-badge status-setup">🔄 Setting Up</div>
+                <div class="platform-url">https://amenires-world-bank.netlify.app</div>
+                <a href="https://amenires-world-bank.netlify.app" class="access-btn" target="_blank">
+                    🌐 Access Netlify Site
+                </a>
+            </div>
+            
+            <!-- Vercel -->
+            <div class="deployment-card">
+                <div class="platform-logo">⚡</div>
+                <div class="platform-name">Vercel</div>
+                <div class="status-badge status-setup">🔄 Setting Up</div>
+                <div class="platform-url">https://amenires-world-bank.vercel.app</div>
+                <a href="https://amenires-world-bank.vercel.app" class="access-btn" target="_blank">
+                    🌐 Access Vercel Site
+                </a>
+            </div>
+            
+            <!-- GitHub Pages -->
+            <div class="deployment-card">
+                <div class="platform-logo">📄</div>
+                <div class="platform-name">GitHub Pages</div>
+                <div class="status-badge status-setup">🔄 Setting Up</div>
+                <div class="platform-url">https://barakaangel.github.io/Amenires-World-Bank/</div>
+                <a href="https://barakaangel.github.io/Amenires-World-Bank/" class="access-btn" target="_blank">
+                    🌐 Access GitHub Pages Site
+                </a>
+            </div>
+        </div>
+        
+        <div class="credentials">
+            <h2>🔐 Demo Access Credentials</h2>
+            
+            <div class="credential-item">
+                <h3>👤 Demo Account</h3>
+                <p><strong>Email:</strong> demo@amenires.worldbank.com</p>
+                <p><strong>Password:</strong> demo123</p>
+                <p><strong>Account Number:</strong> AWB-001-Demo</p>
+            </div>
+            
+            <div class="credential-item">
+                <h3>🔑 Admin Account</h3>
+                <p><strong>Email:</strong> admin@amenires.worldbank.com</p>
+                <p><strong>Password:</strong> admin123</p>
+                <p><strong>Privileges:</strong> Full admin access</p>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>✨ Application Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">💱</div>
+                    <h3>50+ Currencies</h3>
+                    <p>Complete currency display and conversion</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌎</div>
+                    <h3>200+ Countries</h3>
+                    <p>Full country selection by continent</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure Login</h3>
+                    <p>Real authentication system</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h3>Live Dashboard</h3>
+                    <p>Real-time account management</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Multi-language</h3>
+                    <p>Support for multiple languages</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <h3>Responsive</h3>
+                    <p>Works on all devices</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
