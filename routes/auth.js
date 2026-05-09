@@ -21,6 +21,9 @@ const router = express.Router();
  * @desc    Register a new user
  * @access  Public
  */
+// Alias for signup/register
+router.post('/signup', (req, res, next) => { req.url = '/register'; next(); });
+
 router.post('/register', [
   body('firstName').trim().notEmpty().withMessage('First name is required'),
   body('lastName').trim().notEmpty().withMessage('Last name is required'),

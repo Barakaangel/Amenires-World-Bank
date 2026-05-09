@@ -3,7 +3,7 @@
 // ============================================
 
 // API Configuration
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = '/api';
 
 // State Management
 let currentUser = null;
@@ -512,7 +512,7 @@ async function handleSignup(event) {
   setButtonLoading('signupBtn', true);
   
   try {
-    const response = await apiRequest('/auth/signup', {
+    const response = await apiRequest('/auth/register', {
       method: 'POST',
       body: JSON.stringify({
         firstName,

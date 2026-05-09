@@ -5,8 +5,9 @@
 
 const helmet = require('helmet');
 const expressRateLimit = require('express-rate-limit');
-// const slowDown = require('express-slow-down'); // Temporarily disabled
+const slowDown = require('express-slow-down');
 const crypto = require('crypto');
+const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
 
 /**
  * Security Headers Configuration
@@ -15,47 +16,53 @@ const SecurityHeadersConfig = {
   // Content Security Policy
   CSP: {
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: [SELF],
       scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
+        SELF,
+        INLINE,
         "'unsafe-eval'",
         "https://cdn.amenires.worldbank.com",
-        "https://cdn.trust-provider.com"
+        "https://cdnjs.cloudflare.com",
+        "https://apis.google.com",
+        "https://connect.facebook.net",
+        "https://res.wx.qq.com"
       ],
       styleSrc: [
-        "'self'",
-        "'unsafe-inline'",
+        SELF,
+        INLINE,
         "https://fonts.googleapis.com",
+        "https://cdnjs.cloudflare.com",
         "https://cdn.amenires.worldbank.com"
       ],
       imgSrc: [
-        "'self'",
+        SELF,
         "data:",
         "https:",
         "blob:"
       ],
       fontSrc: [
-        "'self'",
+        SELF,
         "https://fonts.gstatic.com",
+        "https://cdnjs.cloudflare.com",
         "https://cdn.amenires.worldbank.com"
       ],
       connectSrc: [
-        "'self'",
+        SELF,
         "https://api.amenires.worldbank.com",
-        "wss://ws.amenires.worldbank.com"
+        "wss://ws.amenires.worldbank.com",
+        "https://accounts.google.com",
+        "https://graph.facebook.com"
       ],
-      mediaSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      baseUri: ["'self'"],
-      formAction: ["'self'"],
-      frameAncestors: ["'none'"],
-      frameSrc: ["'none'"],
-      workerSrc: ["'self'"],
-      manifestSrc: ["'self'"],
+      mediaSrc: [SELF, "https://cdn.amenires.worldbank.com"],
+      objectSrc: [NONE],
+      baseUri: [SELF],
+      formAction: [SELF],
+      frameAncestors: [NONE],
+      frameSrc: [SELF, "https://accounts.google.com", "https://staticxx.facebook.com"],
+      workerSrc: [SELF],
+      manifestSrc: [SELF],
       reportUri: '/api/security/csp-report'
-    },
-    reportOnly: false
+    }
   },
 
   // HSTS
@@ -74,12 +81,12 @@ const SecurityHeadersConfig = {
   REFERRER_POLICY: 'strict-origin-when-cross-origin',
   PERMISSIONS_POLICY: {
     features: {
-      geolocation: ["'self'"],
-      camera: ["'self'"],
-      microphone: ["'self'"],
-      payment: ["'self'"],
-      usb: ["'none'"],
-      magnetometer: ["'none'"]
+      geolocation: [SELF],
+      camera: [SELF],
+      microphone: [SELF],
+      payment: [SELF],
+      usb: [NONE],
+      magnetometer: [NONE]
     }
   }
 };
@@ -164,7 +171,7 @@ const RateLimitingConfig = {
   // Authentication limits
   auth: {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5,
+    max: 10,
     skipSuccessfulRequests: true,
     message: 'Too many authentication attempts, please try again later.'
   },
@@ -206,12 +213,12 @@ const SlowDownConfig = {
   api: {
     windowMs: 60 * 1000, // 1 minute
     delayAfter: 50, // Start slowing after 50 requests
-    delayMs: 500 // Add 500ms delay after threshold
+    delayMs: (hits) => (hits - 50) * 500 // Add 500ms delay per hit after threshold
   },
   login: {
     windowMs: 15 * 60 * 1000, // 15 minutes
     delayAfter: 3, // Start slowing after 3 attempts
-    delayMs: 1000 // Add 1s delay after threshold
+    delayMs: (hits) => (hits - 3) * 1000 // Add 1s delay per hit after threshold
   }
 };
 
@@ -225,73 +232,15 @@ class IPFilterManager {
     this.geoRestrictions = new Map();
   }
 
-  /**
-   * Add IP to whitelist
-   */
-  addToWhitelist(ip) {
-    this.whitelist.add(ip);
-  }
+  addToWhitelist(ip) { this.whitelist.add(ip); }
+  addToBlacklist(ip) { this.blacklist.add(ip); }
+  removeFromWhitelist(ip) { this.whitelist.delete(ip); }
+  removeFromBlacklist(ip) { this.blacklist.delete(ip); }
 
-  /**
-   * Add IP to blacklist
-   */
-  addToBlacklist(ip) {
-    this.blacklist.add(ip);
-  }
-
-  /**
-   * Remove IP from whitelist
-   */
-  removeFromWhitelist(ip) {
-    this.whitelist.delete(ip);
-  }
-
-  /**
-   * Remove IP from blacklist
-   */
-  removeFromBlacklist(ip) {
-    this.blacklist.delete(ip);
-  }
-
-  /**
-   * Check if IP is allowed
-   */
   isAllowed(ip) {
-    // If blacklist has it, deny
-    if (this.blacklist.has(ip)) {
-      return { allowed: false, reason: 'blacklisted' };
-    }
-
-    // If whitelist exists and IP not in it, deny
-    if (this.whitelist.size > 0 && !this.whitelist.has(ip)) {
-      return { allowed: false, reason: 'not_whitelisted' };
-    }
-
+    if (this.blacklist.has(ip)) return { allowed: false, reason: 'blacklisted' };
+    if (this.whitelist.size > 0 && !this.whitelist.has(ip)) return { allowed: false, reason: 'not_whitelisted' };
     return { allowed: true };
-  }
-
-  /**
-   * Add geo restriction
-   */
-  addGeoRestriction(countryCode, action) {
-    this.geoRestrictions.set(countryCode.toUpperCase(), action); // 'allow' or 'deny'
-  }
-
-  /**
-   * Check geo restriction
-   */
-  checkGeoRestriction(countryCode) {
-    const action = this.geoRestrictions.get(countryCode?.toUpperCase());
-
-    if (!action) {
-      return { allowed: true, reason: 'no_restriction' };
-    }
-
-    if (action === 'allow') {
-      return { allowed: true, reason: 'geo_allowed' };
-    } else {
-      return { allowed: false, reason: 'geo_blocked' };
-    }
   }
 }
 
@@ -300,130 +249,69 @@ const ipFilterManager = new IPFilterManager();
 /**
  * Security Headers Middleware
  */
-const securityHeaders = (req, res, next) => {
-  // Content Security Policy
-  res.setHeader('Content-Security-Policy', buildCSP(SecurityHeadersConfig.CSP.directives));
+const securityHeaders = [
+  expressCspHeader(SecurityHeadersConfig.CSP),
+  (req, res, next) => {
+    // HSTS
+    if (SecurityHeadersConfig.HSTS.includeSubDomains) {
+      res.setHeader(
+        'Strict-Transport-Security',
+        `max-age=${SecurityHeadersConfig.HSTS.maxAge}; includeSubDomains; preload`
+      );
+    }
 
-  // HSTS
-  if (SecurityHeadersConfig.HSTS.includeSubDomains) {
-    res.setHeader(
-      'Strict-Transport-Security',
-      `max-age=${SecurityHeadersConfig.HSTS.maxAge}; includeSubDomains; preload`
-    );
+    // Standard headers
+    res.setHeader('X-Frame-Options', SecurityHeadersConfig.X_FRAME_OPTIONS);
+    res.setHeader('X-Content-Type-Options', SecurityHeadersConfig.X_CONTENT_TYPE_OPTIONS);
+    res.setHeader('X-DNS-Prefetch-Control', SecurityHeadersConfig.X_DNS_PREFETCH_CONTROL);
+    res.setHeader('X-Download-Options', SecurityHeadersConfig.X_DOWNLOAD_OPTIONS);
+    res.setHeader('X-XSS-Protection', SecurityHeadersConfig.X_XSS_PROTECTION);
+    res.setHeader('Referrer-Policy', SecurityHeadersConfig.REFERRER_POLICY);
+
+    // Permissions-Policy
+    const permissionsPolicy = Object.entries(SecurityHeadersConfig.PERMISSIONS_POLICY.features)
+      .map(([feature, allow]) => `${feature}=(${allow.join(' ')})`)
+      .join(', ');
+    res.setHeader('Permissions-Policy', permissionsPolicy);
+
+    res.setHeader('X-Powered-By', '');
+    res.setHeader('Server', 'AWB-Secure-AI-v90T');
+
+    next();
   }
-
-  // X-Frame-Options
-  res.setHeader('X-Frame-Options', SecurityHeadersConfig.X_FRAME_OPTIONS);
-
-  // X-Content-Type-Options
-  res.setHeader('X-Content-Type-Options', SecurityHeadersConfig.X_CONTENT_TYPE_OPTIONS);
-
-  // X-DNS-Prefetch-Control
-  res.setHeader('X-DNS-Prefetch-Control', SecurityHeadersConfig.X_DNS_PREFETCH_CONTROL);
-
-  // X-Download-Options
-  res.setHeader('X-Download-Options', SecurityHeadersConfig.X_DOWNLOAD_OPTIONS);
-
-  // X-XSS-Protection
-  res.setHeader('X-XSS-Protection', SecurityHeadersConfig.X_XSS_PROTECTION);
-
-  // Referrer-Policy
-  res.setHeader('Referrer-Policy', SecurityHeadersConfig.REFERRER_POLICY);
-
-  // Permissions-Policy
-  const permissionsPolicy = Object.entries(SecurityHeadersConfig.PERMISSIONS_POLICY.features)
-    .map(([feature, allow]) => `${feature}=${allow.join(',')}`)
-    .join(', ');
-  res.setHeader('Permissions-Policy', permissionsPolicy);
-
-  // Additional security headers
-  res.setHeader('X-Powered-By', '');
-  res.setHeader('Server', 'AWB-Secure');
-
-  next();
-};
-
-/**
- * Build CSP string from directives
- */
-function buildCSP(directives) {
-  return Object.entries(directives)
-    .map(([directive, values]) => {
-      const valuesStr = Array.isArray(values) ? values.join(' ') : values;
-      return `${directive} ${valuesStr}`;
-    })
-    .join('; ');
-}
+];
 
 /**
  * WAF Middleware
  */
 const wafMiddleware = (req, res, next) => {
   const violations = [];
-
-  // Check SQL injection
-  const body = JSON.stringify(req.body);
-  const query = JSON.stringify(req.query);
-  const params = JSON.stringify(req.params);
-  const combinedInput = `${body} ${query} ${params}`;
+  const combinedInput = `${JSON.stringify(req.body)} ${JSON.stringify(req.query)} ${JSON.stringify(req.params)}`;
 
   for (const pattern of WAFRules.SQL_INJECTION_PATTERNS) {
-    if (pattern.test(combinedInput)) {
-      violations.push({ type: 'sql_injection', pattern: pattern.toString() });
-    }
+    if (pattern.test(combinedInput)) violations.push({ type: 'sql_injection', pattern: pattern.toString() });
   }
 
-  // Check XSS
   for (const pattern of WAFRules.XSS_PATTERNS) {
-    if (pattern.test(combinedInput)) {
-      violations.push({ type: 'xss', pattern: pattern.toString() });
-    }
+    if (pattern.test(combinedInput)) violations.push({ type: 'xss', pattern: pattern.toString() });
   }
 
-  // Check path traversal
   for (const pattern of WAFRules.PATH_TRAVERSAL_PATTERNS) {
-    if (pattern.test(req.path)) {
-      violations.push({ type: 'path_traversal', pattern: pattern.toString() });
-    }
+    if (pattern.test(req.path)) violations.push({ type: 'path_traversal', pattern: pattern.toString() });
   }
 
-  // Check command injection
   for (const pattern of WAFRules.COMMAND_INJECTION_PATTERNS) {
-    if (pattern.test(combinedInput)) {
-      violations.push({ type: 'command_injection', pattern: pattern.toString() });
-    }
+    if (pattern.test(combinedInput)) violations.push({ type: 'command_injection', pattern: pattern.toString() });
   }
 
-  // Check SSRF
-  for (const pattern of WAFRules.SSRF_PATTERNS) {
-    if (pattern.test(combinedInput)) {
-      violations.push({ type: 'ssrf', pattern: pattern.toString() });
-    }
-  }
-
-  // Check user-agent
   const ua = req.get('user-agent') || '';
   for (const pattern of WAFRules.MALICIOUS_USER_AGENTS) {
-    if (pattern.test(ua)) {
-      violations.push({ type: 'malicious_user_agent', pattern: pattern.toString() });
-    }
+    if (pattern.test(ua)) violations.push({ type: 'malicious_user_agent', pattern: pattern.toString() });
   }
 
   if (violations.length > 0) {
-    // Log security violation
-    console.error('WAF Violation detected:', {
-      ip: req.ip,
-      userAgent: ua,
-      violations,
-      path: req.path,
-      timestamp: new Date().toISOString()
-    });
-
-    return res.status(403).json({
-      status: 'error',
-      message: 'Request blocked by security rules',
-      violations
-    });
+    console.error('WAF Violation:', { ip: req.ip, violations, path: req.path });
+    return res.status(403).json({ status: 'error', message: 'Blocked by Amenires AI Defense System', violations });
   }
 
   next();
@@ -434,54 +322,26 @@ const wafMiddleware = (req, res, next) => {
  */
 const ipFilterMiddleware = (req, res, next) => {
   const ipCheck = ipFilterManager.isAllowed(req.ip);
-
-  if (!ipCheck.allowed) {
-    return res.status(403).json({
-      status: 'error',
-      message: 'Access denied',
-      reason: ipCheck.reason
-    });
-  }
-
+  if (!ipCheck.allowed) return res.status(403).json({ status: 'error', message: 'Access denied', reason: ipCheck.reason });
   next();
 };
 
 /**
  * Request Size Limit Middleware
  */
-const requestSizeLimit = (limit = '1mb') => {
-  return (req, res, next) => {
-    const contentLength = parseInt(req.get('content-length') || '0');
-
-    if (contentLength > parseSize(limit)) {
-      return res.status(413).json({
-        status: 'error',
-        message: 'Request entity too large'
-      });
-    }
-
-    next();
-  };
+const requestSizeLimit = (limit = '1mb') => (req, res, next) => {
+  const contentLength = parseInt(req.get('content-length') || '0');
+  if (contentLength > parseSize(limit)) return res.status(413).json({ status: 'error', message: 'Payload too large for Amenires Banking System' });
+  next();
 };
 
-/**
- * Parse size string to bytes
- */
 function parseSize(size) {
   const units = { b: 1, kb: 1024, mb: 1024 * 1024, gb: 1024 * 1024 * 1024 };
   const match = size.toString().toLowerCase().match(/^(\d+)\s*([a-z]+)?$/);
-
   if (!match) return 0;
-
-  const value = parseInt(match[1]);
-  const unit = match[2] || 'b';
-
-  return value * (units[unit] || 1);
+  return parseInt(match[1]) * (units[match[2] || 'b'] || 1);
 }
 
-/**
- * Rate limiters
- */
 const globalRateLimiter = expressRateLimit(RateLimitingConfig.global);
 const apiRateLimiter = expressRateLimit(RateLimitingConfig.api);
 const authRateLimiter = expressRateLimit(RateLimitingConfig.auth);
@@ -490,131 +350,8 @@ const passwordResetRateLimiter = expressRateLimit(RateLimitingConfig.passwordRes
 const transactionRateLimiter = expressRateLimit(RateLimitingConfig.transaction);
 const sensitiveRateLimiter = expressRateLimit(RateLimitingConfig.sensitive);
 
-/**
- * Slow down middleware (disabled - express-slow-down not installed)
- */
-const apiSlowDown = (req, res, next) => next(); // Pass-through
-const loginSlowDown = (req, res, next) => next(); // Pass-through
-
-/**
- * TLS Configuration for Node.js
- */
-const TLSConfig = {
-  minVersion: 'TLSv1.3',
-  maxVersion: 'TLSv1.3',
-  ciphers: [
-    'TLS_AES_256_GCM_SHA384',
-    'TLS_CHACHA20_POLY1305_SHA256',
-    'TLS_AES_128_GCM_SHA256'
-  ],
-  honorCipherOrder: true,
-  rejectUnauthorized: true,
-  requestCert: false, // Set to true for mutual TLS
-  ca: [], // Certificate authorities
-  cert: '', // Server certificate
-  key: '', // Server private key
-  secureOptions: crypto.constants.SSL_OP_NO_SSLv3 |
-                crypto.constants.SSL_OP_NO_TLSv1 |
-                crypto.constants.SSL_OP_NO_TLSv1_1 |
-                crypto.constants.SSL_OP_NO_TLSv1_2
-};
-
-/**
- * Subresource Integrity (SRI) Generator
- */
-const generateSRI = (content, algorithm = 'sha384') => {
-  const hash = crypto.createHash(algorithm).update(content).digest('base64');
-  return `${algorithm}-${hash}`;
-};
-
-/**
- * Certificate Transparency Log Checker
- */
-const checkCertificateTransparency = async (hostname) => {
-  // In production, check against CT logs (Google, DigiCert, etc.)
-  return {
-    checked: true,
-    hostname,
-    logs: [
-      'Google Argon2023',
-      'DigiCert Yeti2023'
-    ],
-    certificateValid: true,
-    sctPresent: true,
-    lastChecked: new Date().toISOString()
-  };
-};
-
-/**
- * DNS Security Configuration
- */
-const DNSSecurityConfig = {
-  DNSSEC: {
-    enabled: true,
-    validation: 'require'
-  },
-  DoH: {
-    enabled: true,
-    providers: [
-      'https://dns.google/dns-query',
-      'https://security.cloudflare-dns.com/dns-query'
-    ]
-  },
-  DoT: {
-    enabled: true,
-    providers: [
-      'dns.google',
-      'dns.quad9.net'
-    ]
-  },
-  DNSOverTLS: {
-    enabled: true,
-    port: 853
-  }
-};
-
-/**
- * API Security Configuration
- */
-const APISecurityConfig = {
-  auth: {
-    requireAPIKey: true,
-    apiKeyHeader: 'X-API-Key',
-    apiKeyRotationDays: 90
-  },
-  rateLimiting: {
-    enabled: true,
-    algorithm: 'token_bucket',
-    burstSize: 10,
-    refillRate: 5 // requests per minute
-  },
-  cors: {
-    enabled: true,
-    allowedOrigins: ['https://amenires.worldbank.com'],
-    allowedMethods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    maxAge: 86400
-  },
-  versioning: {
-    currentVersion: 'v1',
-    deprecatedVersions: [],
-    sunsetDate: null
-  }
-};
-
-/**
- * CSP Report Handler
- */
-const handleCSPReport = (req, res) => {
-  const report = req.body;
-
-  console.log('CSP Violation Report:', {
-    timestamp: new Date().toISOString(),
-    report
-  });
-
-  res.status(204).end();
-};
+const apiSlowDown = slowDown(SlowDownConfig.api);
+const loginSlowDown = slowDown(SlowDownConfig.login);
 
 module.exports = {
   SecurityHeadersConfig,
@@ -635,11 +372,5 @@ module.exports = {
   transactionRateLimiter,
   sensitiveRateLimiter,
   apiSlowDown,
-  loginSlowDown,
-  TLSConfig,
-  generateSRI,
-  checkCertificateTransparency,
-  DNSSecurityConfig,
-  APISecurityConfig,
-  handleCSPReport
+  loginSlowDown
 };

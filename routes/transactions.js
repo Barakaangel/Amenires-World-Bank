@@ -4,7 +4,7 @@
  */
 
 const express = require('express');
-const { body, validationResult } = express-validator;
+const { body, validationResult } = require('express-validator');
 const { authenticate } = require('../middleware/auth');
 const { generateTransactionId, generateReferenceNumber } = require('../middleware/security');
 const { auditLog } = require('../middleware/security');

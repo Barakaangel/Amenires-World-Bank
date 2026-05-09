@@ -5,7 +5,7 @@ const { authenticate, authorize } = require('../middleware/auth');
 const { validateAccountOpening } = require('../middleware/validation');
 const upload = require('../middleware/upload');
 
-// Public routes
+// User routes
 router.post(
   '/submit',
   authenticate,
@@ -14,52 +14,45 @@ router.post(
     { name: 'proofOfAddress', maxCount: 1 },
     { name: 'incomeProof', maxCount: 1 }
   ]),
-  validateAccountOpening,
-  accountOpeningController.submitApplication
+  accountOpeningController.createApplication
 );
 
-router.get('/eligibility', authenticate, accountOpeningController.checkEligibility);
-
-// User routes
 router.get('/my-applications', authenticate, accountOpeningController.getUserApplications);
 
-router.get('/:id', authenticate, accountOpeningController.getApplicationById);
+router.get('/:applicationId', authenticate, accountOpeningController.getApplication);
 
-router.put('/:id/documents', 
+router.put('/:applicationId/documents',
   authenticate,
   upload.fields([
-    { name: 'idDocument', maxCount: 1 },
-    { name: 'proofOfAddress', maxCount: 1 },
-    { name: 'incomeProof', maxCount: 1 }
+    { name: 'documents', maxCount: 10 }
   ]),
-  accountOpeningController.uploadDocuments
+  accountOpeningController.submitKYCDocuments
 );
 
 // Admin routes
-router.get('/', authenticate, authorize('admin', 'staff'), accountOpeningController.getAllApplications);
+router.get('/', authenticate, authorize('admin', 'staff'), accountOpeningController.getPendingApplications);
 
-router.patch('/:id/status', 
+router.patch('/:applicationId/status',
   authenticate, 
   authorize('admin', 'staff'),
   accountOpeningController.updateApplicationStatus
 );
 
-router.get('/statistics/dashboard',
-  authenticate,
-  authorize('admin'),
-  accountOpeningController.getApplicationStatistics
-);
-
-router.post('/:id/reject',
+router.post('/:applicationId/verify-kyc',
   authenticate,
   authorize('admin', 'staff'),
-  accountOpeningController.rejectApplication
+  accountOpeningController.verifyKYC
 );
 
-router.post('/:id/approve',
+router.post('/:applicationId/create-account',
   authenticate,
   authorize('admin'),
-  accountOpeningController.approveApplication
+  accountOpeningController.createAccountFromApplication
+);
+
+router.put('/:applicationId',
+  authenticate,
+  accountOpeningController.updateApplication
 );
 
 module.exports = router;

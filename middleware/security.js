@@ -5,6 +5,7 @@
 
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
 /**
  * Generate Secure Password
@@ -43,6 +44,11 @@ const validatePasswordStrength = (password) => {
     feedback: []
   };
   
+  if (!password) {
+    result.feedback.push('Password is required');
+    return result;
+  }
+
   if (password.length < 12) {
     result.feedback.push('Password must be at least 12 characters');
   } else {
@@ -95,12 +101,24 @@ const generateReferenceNumber = (prefix = 'REF') => {
 };
 
 /**
- * Audit Log (simplified version)
+ * Audit Log
  */
 const auditLog = async (action, userId, details = {}) => {
   try {
     console.log(`[AUDIT] ${action} | User: ${userId} | Details:`, details);
-    // In production, this would save to database
+
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        $push: {
+          auditLog: {
+            action,
+            details,
+            timestamp: new Date()
+          }
+        }
+      });
+    }
+
     return true;
   } catch (error) {
     console.error('Audit log error:', error);
