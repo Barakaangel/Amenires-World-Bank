@@ -19,14 +19,14 @@ class LoanController {
       } = req.body;
 
       // Validate user exists
-      const user = await User.findById(userId);
+      const user = await User.findById(String(userId));
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
 
       // Check if user has pending loan applications
       const pendingLoan = await Loan.findOne({
-        userId,
+        userId: String(userId),
         status: { $in: ['pending', 'under_review'] }
       });
 

@@ -17,7 +17,7 @@ const createApplication = async (req, res) => {
     const { userId, accountType, productType, ...applicationData } = req.body;
 
     // Validate user exists
-    const user = await User.findById(userId);
+    const user = await User.findById(String(userId));
     if (!user) {
       return res.status(404).json({
         status: 'error',
@@ -62,7 +62,7 @@ const createApplication = async (req, res) => {
 const getApplication = async (req, res) => {
   try {
     const application = await AccountOpening.findOne({ 
-      applicationId: req.params.applicationId 
+      applicationId: { $eq: String(req.params.applicationId) }
     });
 
     if (!application) {
@@ -90,7 +90,7 @@ const getApplication = async (req, res) => {
 const getUserApplications = async (req, res) => {
   try {
     const applications = await AccountOpening.find({ 
-      userId: req.params.userId 
+      userId: { $eq: String(req.params.userId) }
     }).sort({ createdAt: -1 });
 
     res.status(200).json({

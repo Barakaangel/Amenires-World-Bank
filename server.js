@@ -102,6 +102,7 @@ const fraudEmergencyNetworkRoutes = require('./routes/fraudEmergencyNetwork');
 const directSalesAgentRoutes = require('./routes/directSalesAgent');
 const directInvestmentBrokerageRoutes = require('./routes/directInvestmentBrokerage');
 const conversationalAIRoutes = require('./routes/conversationalAI');
+const aiManagementRoutes = require('./routes/aiManagement');
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
@@ -123,6 +124,7 @@ app.use('/api/fraud-network', fraudEmergencyNetworkRoutes);
 app.use('/api/sales-agents', directSalesAgentRoutes);
 app.use('/api/investment-brokerage', directInvestmentBrokerageRoutes);
 app.use('/api/ai-assistant', conversationalAIRoutes);
+app.use('/api/ai-management', aiManagementRoutes);
 
 // Serve login page
 app.get('/login', (req, res) => {

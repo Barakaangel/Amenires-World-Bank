@@ -21,6 +21,9 @@ const router = express.Router();
  * @desc    Register a new user
  * @access  Public
  */
+// Alias for signup/register
+router.post('/signup', (req, res, next) => { req.url = '/register'; next(); });
+
 router.post('/register', [
   body('firstName').trim().notEmpty().withMessage('First name is required'),
   body('lastName').trim().notEmpty().withMessage('Last name is required'),
@@ -61,7 +64,7 @@ router.post('/register', [
     } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    const existingUser = await User.findOne({ email: { $eq: String(email).toLowerCase() } });
     if (existingUser) {
       return res.status(409).json({
         status: 'error',
@@ -181,7 +184,7 @@ router.post('/login', [
     const { email, password, twoFactorCode } = req.body;
 
     // Find user and include password for verification
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    const user = await User.findOne({ email: { $eq: String(email).toLowerCase() } }).select('+password');
 
     if (!user) {
       return res.status(401).json({
@@ -428,7 +431,7 @@ router.post('/reset-password', [
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     const user = await User.findOne({
-      passwordResetToken: hashedToken,
+      passwordResetToken: { $eq: hashedToken },
       passwordResetExpires: { $gt: Date.now() }
     });
 
@@ -511,7 +514,7 @@ router.post('/verify-email', [
     const { token } = req.body;
 
     const user = await User.findOne({
-      verificationToken: token,
+      verificationToken: { $eq: String(token) },
       verificationExpires: { $gt: Date.now() }
     });
 

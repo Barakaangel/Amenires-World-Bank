@@ -5,20 +5,30 @@
 
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
-
-// In-memory user storage (for development - replace with MongoDB in production)
-let users = [];
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
+const { validationResult } = require('express-validator');
+const User = require('../models/User');
+const { validatePasswordStrength, generateSecureToken } = require('../middleware/security');
+const { auditLog } = require('../middleware/security');
 
 /**
- * Generate JWT Token
+ * Generate JWT Tokens
  */
-const generateToken = (userId, email, role) => {
-  return jwt.sign(
-    { id: userId, email, role },
+const generateTokens = (user) => {
+  const token = jwt.sign(
+    { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET || 'amenires-jwt-secret-key',
-    { expiresIn: '24h' }
+    { expiresIn: process.env.JWT_EXPIRE || '24h' }
   );
+
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_REFRESH_SECRET || 'amenires-refresh-secret-key',
+    { expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d' }
+  );
+
+  return { token, refreshToken };
 };
 
 /**
@@ -26,6 +36,15 @@ const generateToken = (userId, email, role) => {
  */
 exports.signup = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
     const {
       firstName,
       lastName,
@@ -33,71 +52,101 @@ exports.signup = async (req, res) => {
       password,
       phone,
       country,
-      accountType
+      continent,
+      accountType,
+      address,
+      businessName,
+      businessType,
+      title,
+      royalHouse,
+      governmentPosition,
+      countryOwned,
+      useGeneratedPassword,
+      currency
     } = req.body;
 
-    // Validation
-    if (!firstName || !lastName || !email || !password || !country) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide all required fields'
-      });
-    }
-
     // Check if user already exists
-    const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const existingUser = await User.findOne({ email: { $eq: String(email).toLowerCase() } });
     if (existingUser) {
       return res.status(409).json({
-        success: false,
+        status: 'error',
         message: 'An account with this email already exists'
       });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // Validate password strength
+    const passwordStrength = validatePasswordStrength(password);
+    if (!passwordStrength.valid && !useGeneratedPassword) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Password does not meet security requirements',
+        details: passwordStrength
+      });
+    }
+
+    // Create verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Determine role based on account type
+    let role = 'customer';
+    if (accountType === 'royalty') role = 'royal';
+    if (accountType === 'business') role = 'business';
+    if (accountType === 'government' || accountType === 'country_owner') role = 'vip';
 
     // Create new user
-    const newUser = {
-      id: crypto.randomBytes(16).toString('hex'),
+    const user = await User.create({
       firstName,
       lastName,
       email: email.toLowerCase(),
-      password: hashedPassword,
-      phone: phone || '',
+      password,
+      phone,
       country,
-      continent: country,
-      accountType: accountType || 'individual',
-      role: 'customer',
-      isActive: true,
-      isVerified: true,
-      createdAt: new Date()
-    };
+      continent: continent || country, // Fallback if continent not provided
+      accountType,
+      address,
+      businessName,
+      businessType,
+      title,
+      royalHouse,
+      governmentPosition,
+      countryOwned,
+      role,
+      currency: currency || 'USD',
+      isVerified: false,
+      verificationToken,
+      verificationExpires
+    });
 
-    users.push(newUser);
+    const tokens = generateTokens(user);
 
-    // Generate token
-    const token = generateToken(newUser.id, newUser.email, newUser.role);
+    // Audit log
+    await auditLog('USER_REGISTERED', user._id, {
+      email: user.email,
+      accountType: user.accountType,
+      country: user.country
+    });
 
     res.status(201).json({
-      success: true,
-      message: 'Account created successfully',
+      status: 'success',
+      message: 'Account created successfully. Please verify your email.',
       data: {
         user: {
-          id: newUser.id,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          email: newUser.email,
-          country: newUser.country,
-          accountType: newUser.accountType,
-          role: newUser.role
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          accountType: user.accountType,
+          role: user.role,
+          isVerified: user.isVerified
         },
-        token
+        ...tokens
       }
     });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({
-      success: false,
+      status: 'error',
       message: 'An error occurred during registration'
     });
   }
@@ -108,72 +157,170 @@ exports.signup = async (req, res) => {
  */
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
-        success: false,
-        message: 'Please provide email and password'
+        status: 'error',
+        message: 'Validation failed',
+        errors: errors.array()
       });
     }
 
-    // Find user
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    
+    const { email, password, twoFactorCode } = req.body;
+
+    // Use object with explicit field to prevent NoSQL injection if email was an object
+    const user = await User.findOne({ email: { $eq: String(email).toLowerCase() } }).select('+password');
+
     if (!user) {
       return res.status(401).json({
-        success: false,
+        status: 'error',
         message: 'Invalid email or password'
       });
     }
 
-    // Check if account is active
     if (!user.isActive) {
       return res.status(403).json({
-        success: false,
+        status: 'error',
         message: 'Your account has been deactivated. Please contact support.'
       });
     }
 
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    
+    if (user.isLocked && user.lockUntil > Date.now()) {
+      const remainingTime = Math.ceil((user.lockUntil - Date.now()) / 60000);
+      return res.status(423).json({
+        status: 'error',
+        message: `Account is temporarily locked. Try again in ${remainingTime} minutes.`
+      });
+    }
+
+    const isPasswordValid = await user.correctPassword(password);
+
     if (!isPasswordValid) {
+      await user.incrementLoginAttempts();
       return res.status(401).json({
-        success: false,
+        status: 'error',
         message: 'Invalid email or password'
       });
     }
 
-    // Update last login
-    user.lastLoginAt = new Date();
-    user.lastLoginIP = req.ip;
+    if (user.twoFactorEnabled) {
+      if (!twoFactorCode) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Two-factor authentication code required',
+          requireTwoFactor: true
+        });
+      }
 
-    // Generate token
-    const token = generateToken(user.id, user.email, user.role);
+      const verified = speakeasy.totp.verify({
+        secret: user.twoFactorSecret,
+        encoding: 'base32',
+        token: twoFactorCode,
+        window: 2
+      });
+
+      if (!verified) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'Invalid two-factor authentication code'
+        });
+      }
+    }
+
+    await user.resetLoginAttempts();
+
+    user.lastLoginAt = Date.now();
+    user.lastLoginIP = req.ip;
+    await user.save();
+
+    const tokens = generateTokens(user);
+
+    await auditLog('USER_LOGIN', user._id, {
+      email: user.email,
+      ip: req.ip,
+      userAgent: req.get('user-agent')
+    });
 
     res.status(200).json({
-      success: true,
+      status: 'success',
       message: 'Login successful',
       data: {
         user: {
-          id: user.id,
+          id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          country: user.country,
           accountType: user.accountType,
-          role: user.role
+          role: user.role,
+          twoFactorEnabled: user.twoFactorEnabled
         },
-        token
+        ...tokens
       }
     });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
-      success: false,
+      status: 'error',
       message: 'An error occurred during login'
+    });
+  }
+};
+
+/**
+ * Logout
+ */
+exports.logout = async (req, res) => {
+  try {
+    res.status(200).json({
+      status: 'success',
+      message: 'Logout successful'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred during logout'
+    });
+  }
+};
+
+/**
+ * Refresh Token
+ */
+exports.refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Refresh token is required'
+      });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'amenires-refresh-secret-key');
+    const user = await User.findById(String(decoded.id));
+
+    if (!user || !user.isActive) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Invalid refresh token'
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET || 'amenires-jwt-secret-key',
+      { expiresIn: process.env.JWT_EXPIRE || '24h' }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: { token }
+    });
+  } catch (error) {
+    res.status(401).json({
+      status: 'error',
+      message: 'Invalid refresh token'
     });
   }
 };
@@ -183,20 +330,20 @@ exports.login = async (req, res) => {
  */
 exports.getMe = async (req, res) => {
   try {
-    const user = users.find(u => u.id === req.user.id);
-    
+    const user = await User.findById(String(req.user.id));
+
     if (!user) {
       return res.status(404).json({
-        success: false,
+        status: 'error',
         message: 'User not found'
       });
     }
 
     res.status(200).json({
-      success: true,
+      status: 'success',
       data: {
         user: {
-          id: user.id,
+          id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
@@ -211,61 +358,9 @@ exports.getMe = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get user error:', error);
     res.status(500).json({
-      success: false,
+      status: 'error',
       message: 'An error occurred while fetching user data'
-    });
-  }
-};
-
-/**
- * Logout
- */
-exports.logout = async (req, res) => {
-  try {
-    res.status(200).json({
-      success: true,
-      message: 'Logout successful'
-    });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'An error occurred during logout'
-    });
-  }
-};
-
-/**
- * Get all users (for development)
- */
-exports.getAllUsers = async (req, res) => {
-  try {
-    const safeUsers = users.map(user => ({
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      country: user.country,
-      accountType: user.accountType,
-      role: user.role,
-      isActive: user.isActive,
-      createdAt: user.createdAt
-    }));
-
-    res.status(200).json({
-      success: true,
-      data: {
-        users: safeUsers,
-        count: safeUsers.length
-      }
-    });
-  } catch (error) {
-    console.error('Get users error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'An error occurred while fetching users'
     });
   }
 };

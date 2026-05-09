@@ -5,6 +5,8 @@
 
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+const User = require('../models/User');
 
 /**
  * Generate Secure Password
@@ -43,6 +45,11 @@ const validatePasswordStrength = (password) => {
     feedback: []
   };
   
+  if (!password) {
+    result.feedback.push('Password is required');
+    return result;
+  }
+
   if (password.length < 12) {
     result.feedback.push('Password must be at least 12 characters');
   } else {
@@ -95,12 +102,28 @@ const generateReferenceNumber = (prefix = 'REF') => {
 };
 
 /**
- * Audit Log (simplified version)
+ * Audit Log
  */
 const auditLog = async (action, userId, details = {}) => {
   try {
     console.log(`[AUDIT] ${action} | User: ${userId} | Details:`, details);
-    // In production, this would save to database
+
+    if (userId && (typeof userId === 'string' || mongoose.Types.ObjectId.isValid(userId))) {
+      const safeId = String(userId);
+      await User.updateOne(
+        { _id: { $eq: safeId } },
+        {
+          $push: {
+            auditLog: {
+              action,
+              details,
+              timestamp: new Date()
+            }
+          }
+        }
+      );
+    }
+
     return true;
   } catch (error) {
     console.error('Audit log error:', error);
