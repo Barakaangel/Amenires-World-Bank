@@ -66,7 +66,7 @@ exports.signup = async (req, res) => {
     } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    const existingUser = await User.findOne({ email: { $eq: String(email).toLowerCase() } });
     if (existingUser) {
       return res.status(409).json({
         status: 'error',
@@ -168,7 +168,8 @@ exports.login = async (req, res) => {
 
     const { email, password, twoFactorCode } = req.body;
 
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    // Use object with explicit field to prevent NoSQL injection if email was an object
+    const user = await User.findOne({ email: { $eq: String(email).toLowerCase() } }).select('+password');
 
     if (!user) {
       return res.status(401).json({
@@ -297,7 +298,7 @@ exports.refreshToken = async (req, res) => {
     }
 
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || 'amenires-refresh-secret-key');
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(String(decoded.id));
 
     if (!user || !user.isActive) {
       return res.status(401).json({
@@ -329,7 +330,7 @@ exports.refreshToken = async (req, res) => {
  */
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(String(req.user.id));
 
     if (!user) {
       return res.status(404).json({

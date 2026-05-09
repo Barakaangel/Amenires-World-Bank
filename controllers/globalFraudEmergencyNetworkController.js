@@ -7,9 +7,9 @@ class GlobalFraudEmergencyNetworkController {
   // Create or get fraud network profile
   async getProfile(req, res) {
     try {
-      const { userId } = req.params;
+      const userId = String(req.params.userId);
 
-      let profile = await GlobalFraudEmergencyNetwork.findOne({ userId });
+      let profile = await GlobalFraudEmergencyNetwork.findOne({ userId: { $eq: userId } });
 
       if (!profile) {
         profile = await GlobalFraudEmergencyNetwork.create({ userId });
@@ -27,9 +27,9 @@ class GlobalFraudEmergencyNetworkController {
   // Run fraud detection
   async runFraudDetection(req, res) {
     try {
-      const { userId } = req.params;
+      const userId = String(req.params.userId);
 
-      let profile = await GlobalFraudEmergencyNetwork.findOne({ userId });
+      let profile = await GlobalFraudEmergencyNetwork.findOne({ userId: { $eq: userId } });
       if (!profile) {
         profile = await GlobalFraudEmergencyNetwork.create({ userId });
       }

@@ -5,6 +5,7 @@
 
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 
 /**
@@ -107,16 +108,20 @@ const auditLog = async (action, userId, details = {}) => {
   try {
     console.log(`[AUDIT] ${action} | User: ${userId} | Details:`, details);
 
-    if (userId) {
-      await User.findByIdAndUpdate(userId, {
-        $push: {
-          auditLog: {
-            action,
-            details,
-            timestamp: new Date()
+    if (userId && (typeof userId === 'string' || mongoose.Types.ObjectId.isValid(userId))) {
+      const safeId = String(userId);
+      await User.updateOne(
+        { _id: { $eq: safeId } },
+        {
+          $push: {
+            auditLog: {
+              action,
+              details,
+              timestamp: new Date()
+            }
           }
         }
-      });
+      );
     }
 
     return true;

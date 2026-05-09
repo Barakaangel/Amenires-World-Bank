@@ -27,7 +27,7 @@ const authenticate = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     // Check if user still exists
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(String(decoded.id)).select('-password');
     
     if (!user) {
       return res.status(401).json({
@@ -131,7 +131,7 @@ const optionalAuth = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(String(decoded.id)).select('-password');
     
     if (user && user.isActive) {
       req.user = user;
