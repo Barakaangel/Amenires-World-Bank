@@ -7,6 +7,15 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 
 /**
+ * Generate Transaction ID
+ */
+const generateTransactionId = (prefix = 'TXN') => {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = crypto.randomBytes(6).toString('hex').toUpperCase();
+  return `${prefix}-${timestamp}-${random}`;
+};
+
+/**
  * Generate Secure Password
  */
 const generateSecurePassword = (length = 24) => {
@@ -19,18 +28,23 @@ const generateSecurePassword = (length = 24) => {
   let password = '';
   
   // Ensure at least one of each type
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += numbers[Math.floor(Math.random() * numbers.length)];
-  password += symbols[Math.floor(Math.random() * symbols.length)];
+  password += uppercase[crypto.randomInt(0, uppercase.length)];
+  password += lowercase[crypto.randomInt(0, lowercase.length)];
+  password += numbers[crypto.randomInt(0, numbers.length)];
+  password += symbols[crypto.randomInt(0, symbols.length)];
   
   // Fill the rest
   for (let i = password.length; i < length; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)];
+    password += allChars[crypto.randomInt(0, allChars.length)];
   }
   
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  // Shuffle the password using secure Fisher-Yates algorithm
+  const passwordArray = password.split('');
+  for (let i = passwordArray.length - 1; i > 0; i--) {
+    const j = crypto.randomInt(0, i + 1);
+    [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
+  }
+  return passwordArray.join('');
 };
 
 /**
@@ -133,6 +147,7 @@ const validatePhone = (phone) => {
 };
 
 module.exports = {
+  generateTransactionId,
   generateSecurePassword,
   validatePasswordStrength,
   generateSecureToken,
