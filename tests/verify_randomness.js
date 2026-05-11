@@ -8,7 +8,6 @@ console.log('🧪 Verifying Secure Randomness Fixes...');
 // Test 1: Password Generation
 console.log('Testing generateSecurePassword...');
 const password = generateSecurePassword(24);
-console.log(`Generated Password: ${password}`);
 assert.strictEqual(password.length, 24, 'Password should be 24 characters long');
 assert.match(password, /[A-Z]/, 'Password should contain uppercase letters');
 assert.match(password, /[a-z]/, 'Password should contain lowercase letters');
