@@ -6,7 +6,7 @@ function testGenerateSecurePassword() {
     console.log('Testing generateSecurePassword...');
     for (let i = 0; i < 5; i++) {
         const pw = generateSecurePassword(24);
-        console.log(`Generated Password ${i+1}: ${pw}`);
+        // Sensitive data should not be logged
         if (pw.length !== 24) throw new Error('Invalid password length');
     }
     console.log('generateSecurePassword test passed.\n');

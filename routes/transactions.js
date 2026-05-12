@@ -95,7 +95,7 @@ router.post('/transfer', authenticate, [
 
     // Perform transfer
     const amountDecimal = parseFloat(amount);
-    const reference = `TRF-${Date.now()}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+    const reference = generateReferenceNumber('TRF');
 
     // Debit from account
     const debitTransaction = await Transaction.create({

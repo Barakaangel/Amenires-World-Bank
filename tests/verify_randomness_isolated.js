@@ -56,7 +56,7 @@ function testGenerateSecurePassword() {
     console.log('Testing generateSecurePassword...');
     for (let i = 0; i < 5; i++) {
         const pw = generateSecurePassword(24);
-        console.log(`Generated Password ${i+1}: ${pw}`);
+        // Sensitive data should not be logged
         if (pw.length !== 24) throw new Error('Invalid password length');
 
         // Basic check for character diversity
@@ -75,7 +75,7 @@ function testInitiateSMSReset() {
     console.log('Testing SelfServiceRecovery.initiateSMSReset...');
     for (let i = 0; i < 5; i++) {
         const result = SelfServiceRecovery.initiateSMSReset('+1234567890');
-        console.log(`Generated OTP ${i+1}: ${result.otp}`);
+        // Sensitive data should not be logged
         if (!/^\d{6}$/.test(result.otp)) throw new Error('Invalid OTP format: ' + result.otp);
     }
     console.log('SelfServiceRecovery.initiateSMSReset test passed.\n');
