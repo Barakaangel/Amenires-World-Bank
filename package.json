@@ -50,7 +50,7 @@
     "ip-address": "^9.0.5",
     "maxmind": "^4.3.15",
     "fingerprint-generator": "^2.2.1",
-    "fingerprint-scanner": "^1.0.18",
+    "fingerprint-scanner": "^0.5.0",
     "rate-limiter-flexible": "^4.0.0",
     "pino": "^8.17.0",
     "express-winston": "^4.2.0",
