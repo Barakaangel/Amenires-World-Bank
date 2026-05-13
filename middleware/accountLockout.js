@@ -456,7 +456,7 @@ class SelfServiceRecovery {
    * Initiate SMS-based password reset
    */
   static initiateSMSReset(phoneNumber) {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
     // In production, send SMS with OTP
     return {
       method: 'sms',
