@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 
 /**
  * Generate Secure Password
+ * Uses cryptographically secure random number generation
  */
 const generateSecurePassword = (length = 24) => {
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -16,21 +17,26 @@ const generateSecurePassword = (length = 24) => {
   const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
   
   const allChars = uppercase + lowercase + numbers + symbols;
-  let password = '';
+  const passwordArr = [];
   
   // Ensure at least one of each type
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += numbers[Math.floor(Math.random() * numbers.length)];
-  password += symbols[Math.floor(Math.random() * symbols.length)];
+  passwordArr.push(uppercase[crypto.randomInt(0, uppercase.length)]);
+  passwordArr.push(lowercase[crypto.randomInt(0, lowercase.length)]);
+  passwordArr.push(numbers[crypto.randomInt(0, numbers.length)]);
+  passwordArr.push(symbols[crypto.randomInt(0, symbols.length)]);
   
   // Fill the rest
-  for (let i = password.length; i < length; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)];
+  for (let i = passwordArr.length; i < length; i++) {
+    passwordArr.push(allChars[crypto.randomInt(0, allChars.length)]);
   }
   
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  // Fisher-Yates shuffle using cryptographically secure random numbers
+  for (let i = passwordArr.length - 1; i > 0; i--) {
+    const j = crypto.randomInt(0, i + 1);
+    [passwordArr[i], passwordArr[j]] = [passwordArr[j], passwordArr[i]];
+  }
+
+  return passwordArr.join('');
 };
 
 /**
@@ -86,6 +92,15 @@ const generateSecureToken = (length = 32) => {
 };
 
 /**
+ * Generate Transaction ID
+ */
+const generateTransactionId = (prefix = 'TXN') => {
+  const timestamp = Date.now().toString(36);
+  const random = crypto.randomBytes(8).toString('hex').toUpperCase();
+  return `${prefix}-${timestamp}-${random}`;
+};
+
+/**
  * Generate Reference Number
  */
 const generateReferenceNumber = (prefix = 'REF') => {
@@ -136,6 +151,7 @@ module.exports = {
   generateSecurePassword,
   validatePasswordStrength,
   generateSecureToken,
+  generateTransactionId,
   generateReferenceNumber,
   auditLog,
   sanitizeInput,
