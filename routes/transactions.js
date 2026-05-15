@@ -4,7 +4,7 @@
  */
 
 const express = require('express');
-const { body, validationResult } = express-validator;
+const { body, validationResult } = require('express-validator');
 const { authenticate } = require('../middleware/auth');
 const { generateTransactionId, generateReferenceNumber } = require('../middleware/security');
 const { auditLog } = require('../middleware/security');
@@ -94,7 +94,7 @@ router.post('/transfer', authenticate, [
 
     // Perform transfer
     const amountDecimal = parseFloat(amount);
-    const reference = `TRF-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const reference = generateReferenceNumber('TRF');
 
     // Debit from account
     const debitTransaction = await Transaction.create({
