@@ -22,13 +22,13 @@ function testGenerateSecurePassword() {
     const strength = validatePasswordStrength(password);
 
     if (!strength.valid) {
-      console.error(`FAILED: Password "${password}" is not strong enough.`);
+      console.error('FAILED: Generated password is not strong enough.');
       console.error('Feedback:', strength.feedback);
       process.exit(1);
     }
 
     if (password.length !== 24) {
-      console.error(`FAILED: Password length is ${password.length}, expected 24.`);
+      console.error('FAILED: Generated password length is incorrect.');
       process.exit(1);
     }
   }
