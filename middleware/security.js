@@ -19,18 +19,23 @@ const generateSecurePassword = (length = 24) => {
   let password = '';
   
   // Ensure at least one of each type
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += numbers[Math.floor(Math.random() * numbers.length)];
-  password += symbols[Math.floor(Math.random() * symbols.length)];
+  password += uppercase[crypto.randomInt(0, uppercase.length)];
+  password += lowercase[crypto.randomInt(0, lowercase.length)];
+  password += numbers[crypto.randomInt(0, numbers.length)];
+  password += symbols[crypto.randomInt(0, symbols.length)];
   
   // Fill the rest
   for (let i = password.length; i < length; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)];
+    password += allChars[crypto.randomInt(0, allChars.length)];
   }
   
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  // Secure Fisher-Yates Shuffle
+  const arr = password.split('');
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = crypto.randomInt(0, i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.join('');
 };
 
 /**
@@ -86,6 +91,13 @@ const generateSecureToken = (length = 32) => {
 };
 
 /**
+ * Generate Transaction ID
+ */
+const generateTransactionId = () => {
+  return 'TRX-' + crypto.randomBytes(8).toString('hex').toUpperCase();
+};
+
+/**
  * Generate Reference Number
  */
 const generateReferenceNumber = (prefix = 'REF') => {
@@ -136,6 +148,7 @@ module.exports = {
   generateSecurePassword,
   validatePasswordStrength,
   generateSecureToken,
+  generateTransactionId,
   generateReferenceNumber,
   auditLog,
   sanitizeInput,
