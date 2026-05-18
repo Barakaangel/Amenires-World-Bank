@@ -25,7 +25,7 @@ for (let i = 0; i < 100; i++) {
   const strength = validatePasswordStrength(password);
 
   if (!strength.valid) {
-    console.error(`FAILED: Password "${password}" failed strength validation:`, strength.feedback);
+    console.error('FAILED: Generated password failed strength validation:', strength.feedback);
     process.exit(1);
   }
 }
