@@ -36,7 +36,7 @@ function generateRoutingNumber() {
   // 9-digit US routing number
   const digits = [];
   for (let i = 0; i < 8; i++) {
-    digits.push(Math.floor(Math.random() * 10));
+    digits.push(crypto.randomInt(0, 10));
   }
   
   // Calculate checksum digit
@@ -54,7 +54,7 @@ function generateRoutingNumber() {
 function generateIBAN() {
   // Generate GB IBAN
   const countryCode = 'GB';
-  const checkDigits = Math.floor(Math.random() * 90) + 10;
+  const checkDigits = crypto.randomInt(10, 100);
   const bankCode = 'AMEN'; // Bank code
   const sortCode = generateRoutingNumber().substring(0, 6);
   const accountNumber = crypto.randomBytes(8).toString('hex').toUpperCase().substring(0, 8);
