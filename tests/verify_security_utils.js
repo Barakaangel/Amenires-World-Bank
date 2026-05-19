@@ -19,17 +19,14 @@ console.log('Testing generateSecurePassword...');
 
 // Test default length
 const pwd1 = generateSecurePassword();
-console.log('Generated (default 24):', pwd1);
 assert.strictEqual(pwd1.length, 24, 'Default length should be 24');
 
 // Test custom length
 const pwd2 = generateSecurePassword(32);
-console.log('Generated (custom 32):', pwd2);
 assert.strictEqual(pwd2.length, 32, 'Custom length should be 32');
 
 // Test character variety and strength
 const strength = validatePasswordStrength(pwd1);
-console.log('Strength of default password:', strength);
 assert.strictEqual(strength.valid, true, 'Generated password should be valid by strength rules');
 assert.strictEqual(strength.score, 5, 'Generated password should meet all 5 complexity criteria');
 

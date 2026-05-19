@@ -95,7 +95,7 @@ const generateSecureToken = (length = 32) => {
  */
 const generateReferenceNumber = (prefix = 'REF') => {
   const timestamp = Date.now().toString(36);
-  const random = crypto.randomBytes(4).toString('hex').toUpperCase();
+  const random = crypto.randomBytes(6).toString('hex').toUpperCase();
   return `${prefix}-${timestamp}-${random}`;
 };
 
