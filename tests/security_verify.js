@@ -53,6 +53,6 @@ try {
   testSMSOTP();
   console.log('\nAll security verification tests passed!');
 } catch (error) {
-  console.error(`\nTest failed: ${error.message}`);
+  console.error('\nTest failed');
   process.exit(1);
 }
