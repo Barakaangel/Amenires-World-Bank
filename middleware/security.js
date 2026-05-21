@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 
 /**
  * Generate Secure Password
+ * Uses cryptographically secure random number generation and Fisher-Yates shuffle
  */
 const generateSecurePassword = (length = 24) => {
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -16,21 +17,26 @@ const generateSecurePassword = (length = 24) => {
   const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
   
   const allChars = uppercase + lowercase + numbers + symbols;
-  let password = '';
+  let password = [];
   
-  // Ensure at least one of each type
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += numbers[Math.floor(Math.random() * numbers.length)];
-  password += symbols[Math.floor(Math.random() * symbols.length)];
+  // Ensure at least one of each type using secure randomInt
+  password.push(uppercase[crypto.randomInt(0, uppercase.length)]);
+  password.push(lowercase[crypto.randomInt(0, lowercase.length)]);
+  password.push(numbers[crypto.randomInt(0, numbers.length)]);
+  password.push(symbols[crypto.randomInt(0, symbols.length)]);
   
   // Fill the rest
   for (let i = password.length; i < length; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)];
+    password.push(allChars[crypto.randomInt(0, allChars.length)]);
   }
   
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  // Secure Fisher-Yates shuffle
+  for (let i = password.length - 1; i > 0; i--) {
+    const j = crypto.randomInt(0, i + 1);
+    [password[i], password[j]] = [password[j], password[i]];
+  }
+
+  return password.join('');
 };
 
 /**
