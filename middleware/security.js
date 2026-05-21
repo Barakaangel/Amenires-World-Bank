@@ -92,6 +92,13 @@ const generateSecureToken = (length = 32) => {
 };
 
 /**
+ * Generate Transaction ID
+ */
+const generateTransactionId = (prefix = 'TRX') => {
+  return `${prefix}-${crypto.randomBytes(12).toString('hex').toUpperCase()}`;
+};
+
+/**
  * Generate Reference Number
  */
 const generateReferenceNumber = (prefix = 'REF') => {
@@ -142,6 +149,7 @@ module.exports = {
   generateSecurePassword,
   validatePasswordStrength,
   generateSecureToken,
+  generateTransactionId,
   generateReferenceNumber,
   auditLog,
   sanitizeInput,

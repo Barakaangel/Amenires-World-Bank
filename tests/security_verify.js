@@ -16,7 +16,6 @@ const crypto = require('crypto');
 function testSecurePassword() {
   console.log('Testing generateSecurePassword...');
   const password = generateSecurePassword(32);
-  console.log(`Generated Password: ${password}`);
 
   if (password.length !== 32) {
     throw new Error(`Expected length 32, got ${password.length}`);
@@ -37,7 +36,6 @@ function testSecurePassword() {
 function testSMSOTP() {
   console.log('Testing initiateSMSReset OTP...');
   const result = SelfServiceRecovery.initiateSMSReset('1234567890');
-  console.log(`Generated OTP: ${result.otp}`);
 
   if (result.otp.length !== 6) {
     throw new Error(`Expected OTP length 6, got ${result.otp.length}`);
